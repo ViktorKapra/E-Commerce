@@ -1,3 +1,4 @@
+using AutoMapper;
 using E_Commerce_Data;
 
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,8 @@ namespace E_Commerce_Server
 
            // builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddAutoMapper(typeof(Program));
 
             var app = builder.Build();
 
