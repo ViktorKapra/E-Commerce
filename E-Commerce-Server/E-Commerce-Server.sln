@@ -5,9 +5,11 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Commerce-Server-Presentor", "E-Commerce-Server\E-Commerce-Server-Presentor.csproj", "{841F6BF3-7980-4E92-8CB9-2D410189E889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-Commerce-Business-Logic", "E-Commerce-Business-Logic\E-Commerce-Business-Logic.csproj", "{886026F8-BDFA-4E6D-BEA2-90EEB5AFC3F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Commerce-Business-Logic", "E-Commerce-Business-Logic\E-Commerce-Business-Logic.csproj", "{886026F8-BDFA-4E6D-BEA2-90EEB5AFC3F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-Commerce-Data", "E-Commerce-Data\E-Commerce-Data.csproj", "{207FC250-8373-473B-8773-4FF2D21A6B30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Commerce-Data", "E-Commerce-Data\E-Commerce-Data.csproj", "{207FC250-8373-473B-8773-4FF2D21A6B30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-Commerce-Server-Tests", "E-Commerce-Server-Tests\E-Commerce-Server-Tests.csproj", "{B666C710-A915-4C16-9928-0603B3472988}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{207FC250-8373-473B-8773-4FF2D21A6B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{207FC250-8373-473B-8773-4FF2D21A6B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{207FC250-8373-473B-8773-4FF2D21A6B30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B666C710-A915-4C16-9928-0603B3472988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B666C710-A915-4C16-9928-0603B3472988}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B666C710-A915-4C16-9928-0603B3472988}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B666C710-A915-4C16-9928-0603B3472988}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
