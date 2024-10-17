@@ -1,8 +1,10 @@
 using AutoMapper;
 using E_Commerce_Data;
-
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace E_Commerce_Server
 {
@@ -17,6 +19,8 @@ namespace E_Commerce_Server
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            builder.Services.AddHealthChecks().AddSqlServer(connectionString);
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -45,6 +49,8 @@ namespace E_Commerce_Server
             }
 
             app.UseHttpsRedirection();
+            app.MapHealthChecks("health", new HealthCheckOptions
+            { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse});
             app.UseStaticFiles();
 
             app.UseRouting();
