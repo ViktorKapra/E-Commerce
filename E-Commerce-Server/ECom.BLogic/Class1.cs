@@ -1,4 +1,4 @@
-﻿namespace E_Commerce_Business_Logic
+﻿namespace ECom.BLogic
 {
     public class Class1
     {
