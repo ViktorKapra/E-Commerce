@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using E_Commerce_Data;
-using E_Commerce_Server.Mapper;
+using ECom.API.Mapper;
+using ECom.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace E_Commerce_Server
+namespace ECom.API
 {
     public class Startup
     {
@@ -20,7 +20,7 @@ namespace E_Commerce_Server
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -30,7 +30,7 @@ namespace E_Commerce_Server
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            
+
             services.AddSwaggerGen();
 
             services.AddSingleton(new MapperConfiguration(mc =>
@@ -68,14 +68,12 @@ namespace E_Commerce_Server
             app.UseAuthorization();
 
             //Configures endpoint matching to rely on attribute routing
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 { endpoints.MapControllers(); }
             });
-           
-                
 
 
-            //app.Run();
         }
     }
 }

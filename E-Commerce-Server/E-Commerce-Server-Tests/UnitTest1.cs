@@ -1,10 +1,10 @@
-namespace E_Commerce_Server_Tests
+namespace ECom.Test
 {
     public class UnitTest1
     {
         public int PlusFunction(int a, int b)
         { return a + b; }
-        
+
         [Fact]
         public void Test_PlusFunction_Zero_Zero()
         {
@@ -14,7 +14,7 @@ namespace E_Commerce_Server_Tests
             // Act
             int result = PlusFunction(a, b);
             //Asert
-            Assert.Equal(0, result);    
+            Assert.Equal(0, result);
         }
 
         [Fact]

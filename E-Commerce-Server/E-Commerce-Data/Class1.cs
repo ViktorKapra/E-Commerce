@@ -1,4 +1,4 @@
-﻿namespace E_Commerce_Data
+﻿namespace ECom.Data
 {
     public class Class1
     {

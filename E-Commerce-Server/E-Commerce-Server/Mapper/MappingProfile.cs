@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 
-namespace E_Commerce_Server.Mapper
+namespace ECom.API.Mapper
 {
-    public class MappingProfile: Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile() { }
     }

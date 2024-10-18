@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>E_Commerce_Server_Tests</RootNamespace>
+    <RootNamespace>ECom.Test</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\E-Commerce-Data\ECom.Data.csproj" />
     <ProjectReference Include="..\ECom.BLogic\ECom.BLogic.csproj" />
-    <ProjectReference Include="..\E-Commerce-Data\E-Commerce-Data.csproj" />
-    <ProjectReference Include="..\E-Commerce-Server\E-Commerce-Server-Presentor.csproj" />
+    <ProjectReference Include="..\E-Commerce-Server\ECom.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

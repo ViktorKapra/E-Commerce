@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Commerce-Server-Presentor", "E-Commerce-Server\E-Commerce-Server-Presentor.csproj", "{841F6BF3-7980-4E92-8CB9-2D410189E889}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.API", "E-Commerce-Server\ECom.API.csproj", "{841F6BF3-7980-4E92-8CB9-2D410189E889}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Commerce-Data", "E-Commerce-Data\E-Commerce-Data.csproj", "{207FC250-8373-473B-8773-4FF2D21A6B30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.Data", "E-Commerce-Data\ECom.Data.csproj", "{207FC250-8373-473B-8773-4FF2D21A6B30}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Commerce-Server-Tests", "E-Commerce-Server-Tests\E-Commerce-Server-Tests.csproj", "{B666C710-A915-4C16-9928-0603B3472988}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.Test", "E-Commerce-Server-Tests\ECom.Test.csproj", "{B666C710-A915-4C16-9928-0603B3472988}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECom.BLogic", "ECom.BLogic\ECom.BLogic.csproj", "{E39289DB-C615-447D-9FD3-BA5037B49FEE}"
 EndProject
