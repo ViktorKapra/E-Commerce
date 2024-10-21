@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Serilog;
+using Serilog.Filters;
 
 namespace ECom.API
 {
@@ -13,7 +15,26 @@ namespace ECom.API
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            
+            Log.Logger = new LoggerConfiguration() // this loger configuration is created to cover the case 
+                .WriteTo.Console().CreateLogger();// when ConfigureService() throw exception beffore actual 
+                                                  // definition of the loger
+
+            try
+            {
+                Log.Information("Application is staring up");     
+                CreateWebHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "The application failed to start correctly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

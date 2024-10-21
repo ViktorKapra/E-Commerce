@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace ECom.API
 {
@@ -19,8 +20,28 @@ namespace ECom.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            Log.Logger = new LoggerConfiguration()
+              .MinimumLevel.Information()
+              .WriteTo.File(".\\Logs\\log_all.txt", rollingInterval: RollingInterval.Day)
+              .WriteTo.Logger(l => l
+                  .Filter.ByIncludingOnly(x => x.Level == Serilog.Events.LogEventLevel.Information)
+                  .WriteTo.File(".\\Logs\\log_info.txt"))
+              .WriteTo.Logger(l => l
+                  .Filter.ByIncludingOnly(x => x.Level == Serilog.Events.LogEventLevel.Warning)
+                  .WriteTo.File(".\\Logs\\log_warn.txt", rollingInterval: RollingInterval.Day))
+              .WriteTo.Logger(l => l
+                  .Filter.ByIncludingOnly(x => x.Level == Serilog.Events.LogEventLevel.Fatal)
+                  .WriteTo.File(".\\Logs\\log_fatal.txt", rollingInterval: RollingInterval.Day))
+              .WriteTo.Logger(l => l
+                  .Filter.ByIncludingOnly(x => x.Level == Serilog.Events.LogEventLevel.Fatal)
+                  .WriteTo.File(".\\Logs\\log_fatal.txt", rollingInterval: RollingInterval.Day))
+              .CreateLogger();
+
+            services.AddSerilog();
+
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+           
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -66,7 +87,7 @@ namespace ECom.API
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
             //Configures endpoint matching to rely on attribute routing
             app.UseEndpoints(endpoints =>
             {
