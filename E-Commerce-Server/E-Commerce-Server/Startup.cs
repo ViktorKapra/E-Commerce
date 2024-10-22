@@ -5,6 +5,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -77,9 +78,10 @@ namespace ECom.API
 
             }
 
+           
             app.UseHttpsRedirection();
 
-            app.UseHealthChecks("/health", new HealthCheckOptions
+            app.UseHealthChecks("/api/health", new HealthCheckOptions
             { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 
             app.UseStaticFiles();
@@ -91,7 +93,7 @@ namespace ECom.API
             //Configures endpoint matching to rely on attribute routing
             app.UseEndpoints(endpoints =>
             {
-                { endpoints.MapControllers(); }
+                { endpoints.MapDefaultControllerRoute(); }
             });
 
 
