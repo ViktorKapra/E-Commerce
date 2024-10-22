@@ -12,7 +12,6 @@ namespace ECom.API.Controllers
 {
 
     [ApiController]
-    [Route("api/{home?}/")]
 
     public class HomeController : ControllerBase
     {
@@ -24,7 +23,9 @@ namespace ECom.API.Controllers
         }
 
         [HttpGet]
-
+        [Route("/")]
+        [Route("/[controller]")]
+        [Route("/[controller]/[action]")]
         public IActionResult GetInfo()
         {
 
