@@ -79,7 +79,7 @@ namespace ECom.API
 
             app.UseHttpsRedirection();
 
-            app.UseHealthChecks("/health", new HealthCheckOptions
+            app.UseHealthChecks("/api/health", new HealthCheckOptions
             { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 
             app.UseStaticFiles();
@@ -87,7 +87,6 @@ namespace ECom.API
             app.UseRouting();
 
             app.UseAuthorization();
-            
             //Configures endpoint matching to rely on attribute routing
             app.UseEndpoints(endpoints =>
             {
