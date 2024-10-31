@@ -57,9 +57,21 @@ namespace ECom.API
 
             services.AddDefaultIdentity<IdentityUser>(options =>
              options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>();//.AddDefaultTokenProviders();//.AddUserManager<IdentityUser>;
 
-            services.ConfigureApplicationCookie(options =>
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.Cookie.Name = "ECom.Cookie";
+                options.LoginPath = "/api/auth/signIn";
+                options.Cookie.HttpOnly = true;
+                options.SlidingExpiration = true;
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
+            });
+           /* services.ConfigureApplicationCookie(options =>
             {
                 //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.Cookie.Name = "ECom.Cookie";
@@ -70,14 +82,12 @@ namespace ECom.API
                 //using Microsoft.AspNetCore.Authentication.Cookies;
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
-            });
+            });*/
 
             services.AddScoped<ECom.BLogic.Services.Authentication.IAuthService,
                                  ECom.BLogic.Services.Authentication.AuthService>();
-
+            
             services.AddControllers();
-
-          
 
             services.AddSwaggerGen();
 

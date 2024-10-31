@@ -1,21 +1,5 @@
-﻿using Azure.Core;
-using ECom.API.Areas.Identity.Pages.Account;
-using ECom.BLogic.Services.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+﻿using ECom.BLogic.Services.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Serilog;
 
 
@@ -39,10 +23,9 @@ namespace ECom.BLogic.Services.Authentication
         public async Task<Microsoft.AspNetCore.Identity.SignInResult> Login(UserCredentials credentials)
         {
 
-            var result = await _signInManager.PasswordSignInAsync(credentials.Email, credentials.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(credentials.Email, credentials.Password, isPersistent: false, lockoutOnFailure: false);            
             if (result.Succeeded)
-            {
-
+            {   
                 Log.Logger.Information("User logged in.");
             }
             return result;
@@ -53,6 +36,7 @@ namespace ECom.BLogic.Services.Authentication
 
 
             user.UserName = credentials.Email;
+            user.Email = credentials.Email;
             var result = await _userManager.CreateAsync(user, credentials.Password);
 
             if (result.Succeeded)

@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using ECom.API.Models.AuthenticateModels;
+using ECom.API.DTO.AuthenticationDTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +21,7 @@ namespace ECom.Test
             //Arrange
             string email = null;
             string password = null;
-            LoginRequest request = new LoginRequest();
+            LoginDTO request = new LoginDTO();
             var errors = new List<ValidationResult>();
             //Act 
             request.Email = email;
@@ -31,11 +31,11 @@ namespace ECom.Test
             Assert.Equal(2, errors.Count);
         }
         [Fact]
-        public void LoginRequest_Validation_Email_Format()
+        public void LoginDTO_Validation_Email_Format()
         {
             //Arange
             var fixture = new Fixture();
-            LoginRequest request = new LoginRequest()
+            LoginDTO request = new LoginDTO()
             {
                 Email = fixture.Create<string>(),
                 Password = fixture.Create<string>()
@@ -59,11 +59,11 @@ namespace ECom.Test
         }
 
         [Fact]
-        public void LoginRequest_Validation_Short_Password()
+        public void LoginDTO_Validation_Short_Password()
         {
             //Arrange
             var fixture = new Fixture();
-            LoginRequest request = new LoginRequest()
+            LoginDTO request = new LoginDTO()
             {
                 Email = fixture.Create<string>(),
                 Password = fixture.Create<string>().Substring(0, 5)
@@ -79,28 +79,42 @@ namespace ECom.Test
 
         [Theory]
         [MemberData(nameof(weakPasswords))]
-        public void LoginRequest_Validation_Weak_Password(string password)
+        public void LoginDTO_Validation_Weak_Password(string password)
         {
             //Arrange
             var fixture = new Fixture();
-            LoginRequest request = new LoginRequest()
+            LoginDTO request = new LoginDTO()
             {
                 Email = fixture.Create<string>(),
                 Password = password
             };
             var errors = new List<ValidationResult>();
-            string passwordFormat = "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/";
 
             //Act
-            request.Email = fixture.Create<string>();
-            request.Password = password;
-
             Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
             List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
-            bool isWeak = !Regex.Match(request.Password, passwordFormat).Success;
-            //Assert
-            Assert.Equal(isWeak, failedMembers.Contains("Password"));
+            Assert.True( failedMembers.Contains("Password"));
         }
+
+        [Theory]
+        [MemberData(nameof(strongPasswords))]
+        public void LoginDTO_Validation_Strong_Password(string password)
+        {
+            //Arrange
+            var fixture = new Fixture();
+            LoginDTO request = new LoginDTO()
+            {
+                Email = fixture.Create<string>(),
+                Password = password
+            };
+            var errors = new List<ValidationResult>();
+            //Act
+            Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
+            List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
+            //Assert
+            Assert.False(failedMembers.Contains("Password"));
+        }
+
         public static IEnumerable<object[]> weakPasswords =>
         new List<object[]>
         {
@@ -108,6 +122,15 @@ namespace ECom.Test
             new object[] { "idyxgsb3" },new object[] { "sDYlNjGzkchwA" },new object[] { "rdx-1101" },
             new object[] { "i-dwsos2" },new object[] { "Rduras62" },new object[] { "Idtyktmot2" },
             new object[] { "idunn0" }
+        };
+
+        public static IEnumerable<object[]> strongPasswords =>
+        new List<object[]>
+        {
+            new object[]{"5eF#!VKK&6FW" }, new object[] { "R4j-ePTxJ&<x" },new object[] { "T+0#&x5QH}RI" },
+            new object[] { "Nk62y{g05_9J" },new object[] { ".a1`EtC}~6xN" },new object[] { "1Iyn|9Y(*Ua~" },
+            new object[] { "G?YDm%!4Oh`C" },new object[] { "0mV;L7qIFw%j" },new object[] { "Uu0,#cLB_{Iy" },
+            new object[] { "O>Rvtk_9ZmPM" }
         };
     }
 }

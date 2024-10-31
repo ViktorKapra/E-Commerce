@@ -10,8 +10,9 @@ namespace ECom.API.DTO.AuthenticationDTO
           ErrorMessage = "Email addres is not correct")]
         public string Email { get; set; }
         [Required]
-        [RegularExpression("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/",
-            ErrorMessage = " Your password must be : have at 8 characters long; 1 uppercase & 1 lowercase character; 1 number")]
+        [RegularExpression(@"^(?=.*\d)(?=.*[a-z])(?=.*\W)(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$",
+            ErrorMessage = " Your password must have at least 8 characters;\n must conatain at least: \n  1 uppercase character" +
+            "\n 1 lowercase character;\n 1 number")]
         public string Password { get; set; }
     }
 }

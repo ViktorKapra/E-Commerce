@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using ECom.API.Models.AuthenticateModels;
+using ECom.API.DTO.AuthenticationDTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ namespace ECom.Test
     public partial class ModelValidationTests
     {
         [Fact]
-        public void RegisterRequest_Validation_Null_Email_Password()
+        public void RegisterDTO_Validation_Null_Email_Password()
         {
             //Arrange
             string email = null;
@@ -29,7 +29,7 @@ namespace ECom.Test
             Assert.Equal(2, errors.Count);
         }
         [Fact]
-        public void RegisterRequest_Validation_Email_Format()
+        public void RegisterDTO_Validation_Email_Format()
         {
             //Arange
             var fixture = new Fixture();
@@ -57,7 +57,7 @@ namespace ECom.Test
         }
 
         [Fact]
-        public void RegisterRequest_Validation_Short_Password()
+        public void RegisterDTOt_Validation_Short_Password()
         {
             //Arrange
             var fixture = new Fixture();
@@ -77,7 +77,7 @@ namespace ECom.Test
 
         [Theory]
         [MemberData(nameof(weakPasswords))]
-        public void RegisterRequest_Validation_Weak_Password(string password)
+        public void RegisterDTO_Validation_Weak_Password(string password)
         {
             //Arrange
             var fixture = new Fixture();
@@ -87,18 +87,33 @@ namespace ECom.Test
                 Password = password
             };
             var errors = new List<ValidationResult>();
-            string passwordFormat = "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/";
 
             //Act
-            request.Email = fixture.Create<string>();
-            request.Password = password;
 
             Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
             List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
-            bool isWeak = !Regex.Match(request.Password, passwordFormat).Success;
             //Assert
-            Assert.Equal(isWeak, failedMembers.Contains("Password"));
+            Assert.True(failedMembers.Contains("Password"));
         }
 
+        [Theory]
+        [MemberData(nameof(strongPasswords))]
+        public void RegisterDTO_Validation_Strong_Password(string password)
+        {
+            //Arrange
+            var fixture = new Fixture();
+            RegisterDTO request = new RegisterDTO()
+            {
+                Email = fixture.Create<string>(),
+                Password = password
+            };
+            var errors = new List<ValidationResult>();
+            //Act
+            Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
+            List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
+            //Assert
+            Assert.False(failedMembers.Contains("Password"));
+        }
+        
     }
 }

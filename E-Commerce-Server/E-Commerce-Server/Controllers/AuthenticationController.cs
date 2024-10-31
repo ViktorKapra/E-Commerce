@@ -14,14 +14,16 @@ using ECom.BLogic.Services.Authentication;
 namespace ECom.API.Controllers
 {
     [Route("api/auth")]
+    [AllowAnonymous]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private IAuthService _authenticationService;
         private readonly IMapper _mapper;
+        //private Itok
 
        
-        public AuthenticationController( IMapper mapper, AuthService authenticationService)
+        public AuthenticationController( IMapper mapper, IAuthService authenticationService)
         {
 
             _authenticationService = authenticationService;
@@ -45,6 +47,7 @@ namespace ECom.API.Controllers
                 var result = await _authenticationService.Login(user);
                 if (result.Succeeded)
                 {
+                    
                     return Content(result.ToString());
                 }
 
