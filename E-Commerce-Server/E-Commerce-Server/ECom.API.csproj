@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\E-Commerce-Data\ECom.Data.csproj" />
+    <ProjectReference Include="..\ECom.BLogic\ECom.BLogic.csproj" />
   </ItemGroup>
 
 </Project>

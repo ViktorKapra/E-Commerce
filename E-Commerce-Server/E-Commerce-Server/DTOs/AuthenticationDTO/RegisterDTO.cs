@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ECom.API.Models.AuthenticateModels
+namespace ECom.API.DTO.AuthenticationDTO
 {
-    public class LoginRequest
+    public class RegisterDTO
     {
         [Required]
-        [StringLength(320, ErrorMessage ="Email address is too long")]
+        [StringLength(320, ErrorMessage = "Email address is too long")]
         [RegularExpression("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
-            ErrorMessage ="Email addres is not correct")]
+          ErrorMessage = "Email addres is not correct")]
         public string Email { get; set; }
         [Required]
         [RegularExpression("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/",

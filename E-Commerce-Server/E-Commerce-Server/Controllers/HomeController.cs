@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -12,6 +13,7 @@ namespace ECom.API.Controllers
 {
 
     [ApiController]
+    [Authorize]
     [Route("/api/home")]
     public class HomeController : ControllerBase
     {

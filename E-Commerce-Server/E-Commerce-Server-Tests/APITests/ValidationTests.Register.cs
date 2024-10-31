@@ -19,7 +19,7 @@ namespace ECom.Test
             //Arrange
             string email = null;
             string password = null;
-            RegisterRequest request = new RegisterRequest();
+            RegisterDTO request = new RegisterDTO();
             var errors = new List<ValidationResult>();
             //Act 
             request.Email = email;
@@ -33,7 +33,7 @@ namespace ECom.Test
         {
             //Arange
             var fixture = new Fixture();
-            RegisterRequest request = new RegisterRequest()
+            RegisterDTO request = new RegisterDTO()
             { 
               Email = fixture.Create<string>(),
               Password = fixture.Create<string>()
@@ -61,7 +61,7 @@ namespace ECom.Test
         {
             //Arrange
             var fixture = new Fixture();
-            RegisterRequest request = new RegisterRequest()
+            RegisterDTO request = new RegisterDTO()
             {
                 Email = fixture.Create<string>(),
                 Password = fixture.Create<string>().Substring(0, 5)
@@ -81,7 +81,7 @@ namespace ECom.Test
         {
             //Arrange
             var fixture = new Fixture();
-            RegisterRequest request = new RegisterRequest()
+            RegisterDTO request = new RegisterDTO()
             {
                 Email = fixture.Create<string>(),
                 Password = password
