@@ -44,7 +44,7 @@ namespace ECom.API.Controllers
             if (ModelState.IsValid)
             {
                 UserCredentials user = _mapper.Map<UserCredentials>(request);
-                var result = await _authenticationService.Login(user);
+                var result = await _authenticationService.LoginAsync(user);
                 if (result.Succeeded)
                 {
                     
@@ -61,7 +61,7 @@ namespace ECom.API.Controllers
             public async Task<IActionResult> Register(RegisterDTO request)
             {
                 UserCredentials user = _mapper.Map<UserCredentials>(request);
-                var result = await _authenticationService.Register(user);
+                var result = await _authenticationService.RegisterAsync(user);
                 if (result.Succeeded)
                 {
                     return Content(result.ToString());

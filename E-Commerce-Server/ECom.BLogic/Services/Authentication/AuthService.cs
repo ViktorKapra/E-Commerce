@@ -20,7 +20,7 @@ namespace ECom.BLogic.Services.Authentication
             _userManager = userManager;
         }
 
-        public async Task<Microsoft.AspNetCore.Identity.SignInResult> Login(UserCredentials credentials)
+        public async Task<Microsoft.AspNetCore.Identity.SignInResult> LoginAsync(UserCredentials credentials)
         {
 
             var result = await _signInManager.PasswordSignInAsync(credentials.Email, credentials.Password, isPersistent: false, lockoutOnFailure: false);            
@@ -30,7 +30,7 @@ namespace ECom.BLogic.Services.Authentication
             }
             return result;
         }
-        public async Task<Microsoft.AspNetCore.Identity.IdentityResult> Register(UserCredentials credentials)
+        public async Task<Microsoft.AspNetCore.Identity.IdentityResult> RegisterAsync(UserCredentials credentials)
         {
             var user = Activator.CreateInstance<IdentityUser>();
 
