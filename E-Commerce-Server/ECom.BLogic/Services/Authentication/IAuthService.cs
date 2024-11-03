@@ -13,7 +13,8 @@ namespace ECom.BLogic.Services.Authentication
 {
     public interface IAuthService
     {
-        public Task<Microsoft.AspNetCore.Identity.SignInResult> LoginAsync(UserCredentials credentials);
-        public  Task<Microsoft.AspNetCore.Identity.IdentityResult> RegisterAsync(UserCredentials credentials);
+        public Task<SignInResult> LoginAsync(UserCredentials credentials);
+        public Task<IdentityResult> RegisterAsync(UserCredentials credentials);
+        public Task<IdentityResult> ConfirmEmailAsync(EmailConfirmCredentials credentials);
     }
 }

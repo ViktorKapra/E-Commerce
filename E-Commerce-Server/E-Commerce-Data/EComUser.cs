@@ -1,6 +1,6 @@
 ﻿namespace ECom.Data
 {
-    public class Class1
+    public class EComUser
     {
 
     }

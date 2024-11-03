@@ -29,32 +29,45 @@ namespace ECom.Test
             Assert.Equal(2, errors.Count);
         }
         [Fact]
-        public void RegisterDTO_Validation_Email_Format()
+        public void RegisterDTO_Validation_IncorrectEmail_Format()
         {
             //Arange
             var fixture = new Fixture();
             RegisterDTO request = new RegisterDTO()
             { 
-              Email = fixture.Create<string>(),
+              Email = "wrongemail",
               Password = fixture.Create<string>()
             };
             var errors = new List<ValidationResult>();
-            string emailFormat = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
 
             //Act
             Validator.TryValidateObject(request, new ValidationContext(request), errors,true);
             List<string> failedMembers = errors.SelectMany(x=>x.MemberNames).ToList();
-             bool isCorrect = Regex.Match(request.Email, emailFormat).Success;
+            
             //Assert
-            if (isCorrect)
-            {
-                Assert.DoesNotContain("Email", failedMembers); 
-            }
-            else
-            {
-                Assert.Contains("Email", failedMembers);
-            }
+           Assert.Contains("Email", failedMembers);
         }
+
+        [Fact]
+        public void RegisterDTO_Validation_CorrectEmail_Format()
+        {
+            //Arange
+            var fixture = new Fixture();
+            RegisterDTO request = new RegisterDTO()
+            {
+                Email = "test@mail.com",
+                Password = fixture.Create<string>()
+            };
+            var errors = new List<ValidationResult>();
+
+            //Act
+            Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
+            List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
+
+            //Assert
+            Assert.False(failedMembers.Contains("Email"));
+        }
+
 
         [Fact]
         public void RegisterDTOt_Validation_Short_Password()

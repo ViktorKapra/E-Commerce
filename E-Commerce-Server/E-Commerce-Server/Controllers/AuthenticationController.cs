@@ -8,8 +8,12 @@ using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using ECom.BLogic.Services.Models;
 using System.Net;
+
 using Microsoft.AspNetCore.Http.HttpResults;
 using ECom.BLogic.Services.Authentication;
+using ECom.API.DTOs.AuthenticationDTO;
+using System.ComponentModel.DataAnnotations;
+//using Microsoft.AspNetCore.Components;
 
 namespace ECom.API.Controllers
 {
@@ -20,55 +24,59 @@ namespace ECom.API.Controllers
     {
         private IAuthService _authenticationService;
         private readonly IMapper _mapper;
-        //private Itok
 
-       
-        public AuthenticationController( IMapper mapper, IAuthService authenticationService)
+        public AuthenticationController(IMapper mapper, IAuthService authenticationService)
         {
 
             _authenticationService = authenticationService;
             _mapper = mapper;
-           
+
         }
 
-        [HttpGet("/emailConfirm")]
-        public IActionResult ConfirmEmail()
+        [HttpGet("emailConfirm")]
+        public async Task<IActionResult> ConfirmEmail(EmailConfirmDTO confirmDTO)
         {
-            //TO DO 
-            return StatusCode(501, "This feature is not implemented.");
+            
+            EmailConfirmCredentials credentials = _mapper.Map<EmailConfirmCredentials>(confirmDTO);
+            IdentityResult result = await _authenticationService.ConfirmEmailAsync(credentials);
+            if (result.Succeeded)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return Unauthorized(result.Errors.Select(x=>x.Description).ToString());
+            }
         }
-        [HttpPost("/sigIn")]
 
+        [HttpPost("signIn")]
         public async Task<IActionResult> Login(LoginDTO request)
         {
-            if (ModelState.IsValid)
+            UserCredentials user = _mapper.Map<UserCredentials>(request);
+            var result = await _authenticationService.LoginAsync(user);
+            if (result.Succeeded)
             {
-                UserCredentials user = _mapper.Map<UserCredentials>(request);
-                var result = await _authenticationService.LoginAsync(user);
-                if (result.Succeeded)
-                {
-                    
-                    return Content(result.ToString());
-                }
-
-                // TO DO
-                
+                return Content(result.ToString());
             }
-            return StatusCode(401);
+            return Unauthorized();
         }
-            [HttpPost("/signUp")]
-            [AllowAnonymous]
-            public async Task<IActionResult> Register(RegisterDTO request)
-            {
+
+        [HttpPost("signUp")]
+        public async Task<IActionResult> Register(RegisterDTO request)
+        {
+          //  if (ModelState.IsValid)
+            //{
                 UserCredentials user = _mapper.Map<UserCredentials>(request);
                 var result = await _authenticationService.RegisterAsync(user);
                 if (result.Succeeded)
                 {
                     return Content(result.ToString());
                 }
-            string errorMessage = result != null ? result.Errors.ToString() : "Registration failed";
+                string errorMessage = result != null ? result.Errors.ToString() : "Registration failed";
                 return StatusCode(400, errorMessage);
-            }
+           // }
+            return BadRequest();
+        }
     }
-    
+
 }

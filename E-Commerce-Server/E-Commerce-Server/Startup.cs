@@ -59,30 +59,20 @@ namespace ECom.API
              options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();//.AddDefaultTokenProviders();//.AddUserManager<IdentityUser>;
 
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+           
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+            })
             .AddCookie(options =>
             {
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-                options.Cookie.Name = "ECom.Cookie";
                 options.LoginPath = "/api/auth/signIn";
                 options.Cookie.HttpOnly = true;
                 options.SlidingExpiration = true;
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
             });
-           /* services.ConfigureApplicationCookie(options =>
-            {
-                //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.Cookie.Name = "ECom.Cookie";
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                options.LoginPath = "/api/auth/signIn";
-                // ReturnUrlParameter requires 
-                //using Microsoft.AspNetCore.Authentication.Cookies;
-                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-                options.SlidingExpiration = true;
-            });*/
 
             services.AddScoped<ECom.BLogic.Services.Authentication.IAuthService,
                                  ECom.BLogic.Services.Authentication.AuthService>();

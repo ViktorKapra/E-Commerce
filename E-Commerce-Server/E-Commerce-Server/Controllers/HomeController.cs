@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Core;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +14,8 @@ namespace ECom.API.Controllers
 {
 
     [ApiController]
-    [Authorize]
     [Route("/api/home")]
+    [Authorize]
     public class HomeController : ControllerBase
     {
         private readonly IMapper _mapper;
