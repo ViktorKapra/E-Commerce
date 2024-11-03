@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using ECom.Data;
 
 
 
@@ -15,13 +16,13 @@ namespace ECom.BLogic.Services.Authentication
 {
     public class AuthService : IAuthService
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<EComUser> _signInManager;
+        private readonly UserManager<EComUser> _userManager;
         
 
 
-        public AuthService(SignInManager<IdentityUser> signInManager,
-             UserManager<IdentityUser> userManager)
+        public AuthService(SignInManager<EComUser> signInManager,
+             UserManager<EComUser> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -30,7 +31,7 @@ namespace ECom.BLogic.Services.Authentication
         public async Task<IdentityResult> ConfirmEmailAsync(EmailConfirmCredentials credentials)
         {
             
-            IdentityUser? user = await _userManager.FindByEmailAsync(credentials.Email);
+            EComUser? user = await _userManager.FindByEmailAsync(credentials.Email);
 
             if (user == null) 
             {
@@ -56,7 +57,7 @@ namespace ECom.BLogic.Services.Authentication
         }
         public async Task<IdentityResult> RegisterAsync(UserCredentials credentials)
         {
-            var user = Activator.CreateInstance<IdentityUser>();
+            var user = Activator.CreateInstance<EComUser>();
 
 
             user.UserName = credentials.Email;

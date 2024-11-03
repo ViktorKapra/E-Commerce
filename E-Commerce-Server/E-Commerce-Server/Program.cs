@@ -1,5 +1,5 @@
 using AutoMapper;
-using E_Commerce_Data;
+using ECom.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

@@ -7,19 +7,20 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using ECom.BLogic.Services.Models;
 using ECom.BLogic.Services.Authentication;
+using ECom.Data;
 
 namespace ECom.Test.BLogicTests
 {
     public class AuthServiceTests
     {
-        private UserManager<IdentityUser> _userManager;
-        private SignInManager<IdentityUser> _signInManager;
+        private UserManager<EComUser> _userManager;
+        private SignInManager<EComUser> _signInManager;
         private AuthService _authService;
 
         public AuthServiceTests()
         {
-            _userManager = A.Fake<UserManager<IdentityUser>>();
-            _signInManager = A.Fake<SignInManager<IdentityUser>>();
+            _userManager = A.Fake<UserManager<EComUser>>();
+            _signInManager = A.Fake<SignInManager<EComUser>>();
             _authService = new AuthService(_signInManager, _userManager);
         }
         public static IEnumerable<object[]> userCredentials =>
@@ -62,7 +63,7 @@ namespace ECom.Test.BLogicTests
             //Arrange
 
             A.CallTo(() => _userManager.CreateAsync(
-            A<IdentityUser>.That.Matches(u => u.Email == testEmail),
+            A<EComUser>.That.Matches(u => u.Email == testEmail),
             testPassword))
             .Returns(Task.FromResult(IdentityResult.Success));
 

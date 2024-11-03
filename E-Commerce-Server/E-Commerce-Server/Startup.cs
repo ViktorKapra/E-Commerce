@@ -55,11 +55,10 @@ namespace ECom.API
 
             services.AddHealthChecks().AddSqlServer(connectionString);
 
-            services.AddDefaultIdentity<IdentityUser>(options =>
-             options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();//.AddDefaultTokenProviders();//.AddUserManager<IdentityUser>;
+            services.AddDefaultIdentity<EComUser>(options => options.SignIn.RequireConfirmedAccount = true)
+         .AddEntityFrameworkStores<ApplicationDbContext>();//.AddDefaultTokenProviders();//.AddUserManager<IdentityUser>;
 
-           
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
