@@ -61,7 +61,8 @@ namespace ECom.API
             services.AddHealthChecks().AddSqlServer(connectionString);
 
             services.AddDefaultIdentity<EComUser>(options => options.SignIn.RequireConfirmedAccount = true)
-         .AddEntityFrameworkStores<ApplicationDbContext>();//.AddDefaultTokenProviders();//.AddUserManager<IdentityUser>;
+                .AddRoles<EComRole>()
+         .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
             services.AddAuthentication(options =>
@@ -77,7 +78,7 @@ namespace ECom.API
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
             });
-
+            
             services.ConfigureAndValidate<SmtpServerSettings>(Configuration);
 
             services.AddScoped<BLogic.Services.Authentication.IAuthService,
@@ -92,7 +93,6 @@ namespace ECom.API
             {
                 mc.AddProfile(new MappingProfile());
             }).CreateMapper());
-
 
 
         }

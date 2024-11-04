@@ -1,4 +1,5 @@
 using AutoMapper;
+using ECom.Configuration.Seeding;
 using ECom.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore;
@@ -22,8 +23,11 @@ namespace ECom.API
 
             try
             {
-                Log.Information("Application is staring up");     
-                CreateWebHostBuilder(args).Build().Run();
+                Log.Information("Application is staring up");
+                var host = CreateWebHostBuilder(args).Build();
+                Seeder.Seed(host);
+                
+                host.Run();
             }
             catch (Exception ex)
             {

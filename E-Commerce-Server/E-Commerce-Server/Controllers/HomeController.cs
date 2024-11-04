@@ -15,7 +15,7 @@ namespace ECom.API.Controllers
 
     [ApiController]
     [Route("/api/home")]
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     public class HomeController : ControllerBase
     {
         private readonly IMapper _mapper;
