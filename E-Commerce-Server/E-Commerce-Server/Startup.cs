@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECom.API.Mapper;
+using ECom.BLogic.Services.EmailService;
 using ECom.Data;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication;
@@ -11,6 +12,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using ECom.Configuration.Extenstions;
+using ECom.Configuration.Settings;
 
 namespace ECom.API
 {
@@ -41,13 +46,13 @@ namespace ECom.API
                   .WriteTo.File(".\\Logs\\log_fatal.txt", rollingInterval: RollingInterval.Day))
               .CreateLogger();
 
-           // services.AddAuthentication().AddIdentityCookies();
+            // services.AddAuthentication().AddIdentityCookies();
 
             services.AddSerilog();
 
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-           
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
@@ -73,9 +78,12 @@ namespace ECom.API
                 options.SlidingExpiration = true;
             });
 
-            services.AddScoped<ECom.BLogic.Services.Authentication.IAuthService,
-                                 ECom.BLogic.Services.Authentication.AuthService>();
-            
+            services.ConfigureAndValidate<SmtpServerSettings>(Configuration);
+
+            services.AddScoped<BLogic.Services.Authentication.IAuthService,
+                                 BLogic.Services.Authentication.AuthService>();
+            services.AddScoped<IEmailService, EmailService>();
+
             services.AddControllers();
 
             services.AddSwaggerGen();
@@ -105,7 +113,7 @@ namespace ECom.API
 
             }
 
-           
+
             app.UseHttpsRedirection();
 
             app.UseHealthChecks("/api/health", new HealthCheckOptions
@@ -118,8 +126,8 @@ namespace ECom.API
             app.UseAuthentication();
 
             app.UseAuthorization();
-            
-            
+
+
             //Configures endpoint matching to rely on attribute routing
             app.UseEndpoints(endpoints =>
             {

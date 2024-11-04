@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using ECom.BLogic.Services.Authentication;
 using ECom.API.DTOs.AuthenticationDTO;
 using System.ComponentModel.DataAnnotations;
+using Serilog;
 //using Microsoft.AspNetCore.Components;
 
 namespace ECom.API.Controllers
@@ -34,9 +35,10 @@ namespace ECom.API.Controllers
         }
 
         [HttpGet("emailConfirm")]
-        public async Task<IActionResult> ConfirmEmail(EmailConfirmDTO confirmDTO)
+        public async Task<IActionResult> ConfirmEmail([FromQuery]EmailConfirmDTO confirmDTO)
         {
-            
+
+            Log.Information("Confirmation is reached!");
             EmailConfirmCredentials credentials = _mapper.Map<EmailConfirmCredentials>(confirmDTO);
             IdentityResult result = await _authenticationService.ConfirmEmailAsync(credentials);
             if (result.Succeeded)
@@ -45,7 +47,9 @@ namespace ECom.API.Controllers
             }
             else
             {
-                return Unauthorized(result.Errors.Select(x=>x.Description).ToString());
+                string errorMessage = result != null ? String.Join(' ', result.Errors.Select(x => x.Description).ToList()) : "Confirmation Failed";
+                Log.Error(errorMessage);
+                return Unauthorized(errorMessage);
             }
         }
 
@@ -72,10 +76,11 @@ namespace ECom.API.Controllers
                 {
                     return Content(result.ToString());
                 }
-                string errorMessage = result != null ? result.Errors.ToString() : "Registration failed";
-                return StatusCode(400, errorMessage);
-           // }
-            return BadRequest();
+            string errorMessage = result != null ? String.Join(' ', result.Errors.Select(x => x.Description).ToList()) : "Registration Failed";
+            Log.Error(errorMessage);
+            return BadRequest(errorMessage);
+            // }
+
         }
     }
 

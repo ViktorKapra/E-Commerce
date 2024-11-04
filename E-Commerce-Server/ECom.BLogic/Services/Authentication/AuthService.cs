@@ -9,6 +9,8 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using ECom.Data;
+using ECom.BLogic.Services.EmailService;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 
 
@@ -18,15 +20,19 @@ namespace ECom.BLogic.Services.Authentication
     {
         private readonly SignInManager<EComUser> _signInManager;
         private readonly UserManager<EComUser> _userManager;
+        private readonly IEmailService _emailService;
         
 
 
         public AuthService(SignInManager<EComUser> signInManager,
-             UserManager<EComUser> userManager)
+             UserManager<EComUser> userManager, IEmailService emailService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _emailService = emailService;
         }
+        private string EncodeToken(string token) => WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+        private string DecodeToken(string token) => Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
 
         public async Task<IdentityResult> ConfirmEmailAsync(EmailConfirmCredentials credentials)
         {
@@ -37,9 +43,11 @@ namespace ECom.BLogic.Services.Authentication
             {
                 IdentityError notFound = new IdentityError();
                 notFound.Description = $"User with email {credentials.Email} was not found!";
+                Log.Error(notFound.Description);
                 return IdentityResult.Failed(notFound);
             }
-            IdentityResult result = await _userManager.ConfirmEmailAsync(user, credentials.ConfirmationCode);
+            string codeDecoded = DecodeToken(credentials.ConfirmationCode);
+            IdentityResult result = await _userManager.ConfirmEmailAsync(user,codeDecoded);
             return result;
             
         }
@@ -57,9 +65,9 @@ namespace ECom.BLogic.Services.Authentication
         }
         public async Task<IdentityResult> RegisterAsync(UserCredentials credentials)
         {
-            var user = Activator.CreateInstance<EComUser>();
 
-
+            
+           var user = Activator.CreateInstance<EComUser>();
             user.UserName = credentials.Email;
             user.Email = credentials.Email;
             var result = await _userManager.CreateAsync(user, credentials.Password);
@@ -68,40 +76,16 @@ namespace ECom.BLogic.Services.Authentication
             {
                 Log.Logger.Information("User created a new account with password.");
 
-                string userId = await _userManager.GetUserIdAsync(user);
-                string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                //await SendConfirmationEmailAsync(user.Email, code);
-
-                /*await _emailSender.SendEmailAsync(credentials.Email, "Confirm your email",
-                    $"Please confirm your account by using this token {code}."); */
+                var createdUser = await _userManager.FindByEmailAsync(user.Email);
+                string code = await _userManager.GenerateEmailConfirmationTokenAsync(createdUser);
+                code = EncodeToken(code);
+                //Log.Information(code);
+                await _emailService.SendEmailAsync(credentials.Email, "Confirm your email",
+                    $"Please confirm your account by using this token {code}."); 
 
             }
             return result;
         }
-        /*private async Task SendConfirmationEmailAsync(string email, string code)
-        {
-            MailMessage mailMessage = new MailMessage("ECommerce@mail.com",email);
-            mailMessage.Subject = "Confirm your email";
-            mailMessage.Body = $"Please confirm your account by using this token {code}.";
-
-            SmtpClient smtpClient = new SmtpClient();
-            smtpClient.Host = "smtp.maileroo.com";
-            smtpClient.Port = 587;
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential("SenderEmail," "SenderPassword");
-            smtpClient.EnableSsl = true;
-
-            try
-            {
-                smtpClient.Send(mailMessage);
-                Console.WriteLine("Email Sent Successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-        }*/
 
     }
 }

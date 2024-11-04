@@ -7,7 +7,7 @@ namespace ECom.API.DTOs.AuthenticationDTO
         [Required]
         [StringLength(320, ErrorMessage = "Email address is too long")]
         [RegularExpression("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
-            ErrorMessage = "Email addres is not correct")]
+          ErrorMessage = "Email addres is not correct")]
         public string Email { get; set; }
 
         [Required]

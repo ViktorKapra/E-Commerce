@@ -8,6 +8,7 @@ using FakeItEasy;
 using ECom.BLogic.Services.Models;
 using ECom.BLogic.Services.Authentication;
 using ECom.Data;
+using ECom.BLogic.Services.EmailService;
 
 namespace ECom.Test.BLogicTests
 {
@@ -16,12 +17,14 @@ namespace ECom.Test.BLogicTests
         private UserManager<EComUser> _userManager;
         private SignInManager<EComUser> _signInManager;
         private AuthService _authService;
+        private IEmailService _emailService;
 
         public AuthServiceTests()
         {
             _userManager = A.Fake<UserManager<EComUser>>();
             _signInManager = A.Fake<SignInManager<EComUser>>();
-            _authService = new AuthService(_signInManager, _userManager);
+            _emailService = A.Fake<IEmailService>(); 
+            _authService = new AuthService(_signInManager, _userManager,_emailService);
         }
         public static IEnumerable<object[]> userCredentials =>
             new List<object[]>{ new object[] { "test@example.com", "Test@1234" } };
