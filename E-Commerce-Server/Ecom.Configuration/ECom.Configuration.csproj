@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\E-Commerce-Data\ECom.Data.csproj" />
+    <ProjectReference Include="..\ECom.Constants\ECom.Constants.csproj" />
   </ItemGroup>
 
 </Project>

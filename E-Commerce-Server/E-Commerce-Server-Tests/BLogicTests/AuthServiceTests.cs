@@ -9,6 +9,8 @@ using ECom.BLogic.Services.Models;
 using ECom.BLogic.Services.Authentication;
 using ECom.Data;
 using ECom.BLogic.Services.EmailService;
+using AutoFixture;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace ECom.Test.BLogicTests
 {
@@ -29,11 +31,25 @@ namespace ECom.Test.BLogicTests
         public static IEnumerable<object[]> userCredentials =>
             new List<object[]>{ new object[] { "test@example.com", "Test@1234" } };
 
-
-        [Fact]
-        
-        public void Login_IncorrectCredentials_Test()
+        [Theory]
+        [MemberData(nameof(userCredentials))]
+        public async void Register_Creates_EmailToken_Test(string testEmail, string testPassword)
         {
+            //Arrange
+            A.CallTo(() => _userManager.CreateAsync(
+                A<EComUser>.That.Matches(u => u.Email == testEmail),
+                testPassword))
+                .Returns(Task.FromResult(IdentityResult.Success));
+
+            var credentials = new UserCredentials { Email = testEmail, Password = testPassword };
+
+            //Act
+            await _authService.RegisterAsync(credentials);
+
+            //Assert 
+            A.CallTo(() => _userManager.GenerateEmailConfirmationTokenAsync(
+                A<EComUser>.Ignored))
+                .MustHaveHappenedOnceExactly();
         }
 
         [Theory]
@@ -53,15 +69,9 @@ namespace ECom.Test.BLogicTests
             Assert.True(result.Succeeded);
         }
 
-        [Fact]
-        public void Register_IncorrectCredentials_Test()
-        {
-            
-        }
-
         [Theory]
         [MemberData(nameof(userCredentials))]
-        public async  void Register_Invokes_UserManager_Create_Test(string testEmail, string testPassword)
+        public async  void Register_Creates_User_With_Role_Test(string testEmail, string testPassword)
         {
             //Arrange
 
@@ -76,12 +86,48 @@ namespace ECom.Test.BLogicTests
              IdentityResult result = await _authService.RegisterAsync(credentials);
 
             //Assert 
+            A.CallTo(() => _userManager.AddToRoleAsync(A<EComUser>.Ignored, "User"))
+                .MustHaveHappenedOnceExactly();
             Assert.True(result.Succeeded);
         }
-        [Fact]
-        public void Confirming_Password_Test()
-        {
 
+        [Theory]
+        [MemberData(nameof(userCredentials))]
+        public async void Register_Sends_Email_Test(string testEmail, string testPassword)
+        {
+            //Arrange
+
+            A.CallTo(() => _userManager.CreateAsync(
+            A<EComUser>.That.Matches(u => u.Email == testEmail),
+            testPassword))
+            .Returns(Task.FromResult(IdentityResult.Success));
+
+            UserCredentials credentials = new UserCredentials { Email = testEmail, Password = testPassword };
+
+            //Act
+            IdentityResult result = await _authService.RegisterAsync(credentials);
+
+            //Assert 
+            A.CallTo(() => _emailService.SendEmailAsync(testEmail, A<string>.Ignored, A<string>.Ignored))
+                .MustHaveHappenedOnceExactly();
+        }
+        [Theory]
+        [InlineData("Some@mail.com", "Good-token")]
+        public async void ConfirmingEmail_Invokes_UserManager_ConfirmEmail_Test(string email, string code)
+        {
+            //Arrange
+            var fixture = new Fixture();
+            var emailCredits = new EmailConfirmCredentials { Email = email, ConfirmationCode = code };
+            var fakeUser = fixture.Create<EComUser>();
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(emailCredits.ConfirmationCode));
+
+            A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult(fakeUser));
+            //Act
+            IdentityResult result = await _authService.ConfirmEmailAsync(emailCredits);
+
+            //Assert
+            A.CallTo(() => _userManager.ConfirmEmailAsync(fakeUser,decodedToken))
+                .MustHaveHappenedOnceExactly();
         }
     }
 }

@@ -23,6 +23,7 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.TestCorrelator" Version="4.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
 
@@ -34,6 +35,7 @@
     <ProjectReference Include="..\E-Commerce-Data\ECom.Data.csproj" />
     <ProjectReference Include="..\ECom.BLogic\ECom.BLogic.csproj" />
     <ProjectReference Include="..\Ecom.Configuration\ECom.Configuration.csproj" />
+    <ProjectReference Include="..\ECom.Constants\ECom.Constants.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ECom.Configuration.Extenstions;
 using ECom.Configuration.Settings;
+using System.Net.Mail;
 
 namespace ECom.API
 {
@@ -44,6 +45,7 @@ namespace ECom.API
               .WriteTo.Logger(l => l
                   .Filter.ByIncludingOnly(x => x.Level == Serilog.Events.LogEventLevel.Fatal)
                   .WriteTo.File(".\\Logs\\log_fatal.txt", rollingInterval: RollingInterval.Day))
+              .WriteTo.TestCorrelator()
               .CreateLogger();
 
             // services.AddAuthentication().AddIdentityCookies();
@@ -93,7 +95,7 @@ namespace ECom.API
             {
                 mc.AddProfile(new MappingProfile());
             }).CreateMapper());
-
+            services.AddTransient<SmtpClient>();
 
         }
 

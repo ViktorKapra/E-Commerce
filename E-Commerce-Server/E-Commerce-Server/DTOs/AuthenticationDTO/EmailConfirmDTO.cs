@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ECom.Constants;
 
 namespace ECom.API.DTOs.AuthenticationDTO
 {
@@ -6,7 +7,7 @@ namespace ECom.API.DTOs.AuthenticationDTO
     {
         [Required]
         [StringLength(320, ErrorMessage = "Email address is too long")]
-        [RegularExpression("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+        [RegularExpression(ValidationConsts.EmailRegex,
           ErrorMessage = "Email addres is not correct")]
         public string Email { get; set; }
 

@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using ECom.Constants;
 namespace ECom.Configuration.Settings
 {
     public class SmtpServerSettings
     {
         [Required]
         [StringLength(320, ErrorMessage = "Email address is too long")]
-        [RegularExpression("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")]
+        [RegularExpression(ValidationConsts.EmailRegex)]
         public string Email { get; set; }
         [Required]
-        [RegularExpression(@"^(?=.*\d)(?=.*[a-z])(?=.*\W)(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$")]
+        [RegularExpression(ValidationConsts.PasswordRegex)]
         public string Password { get; set; }
         [Required]
         public string Host { get; set; }

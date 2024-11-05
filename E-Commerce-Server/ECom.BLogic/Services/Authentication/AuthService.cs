@@ -77,9 +77,11 @@ namespace ECom.BLogic.Services.Authentication
                 Log.Logger.Information("User created a new account with password.");
 
                 var createdUser = await _userManager.FindByEmailAsync(user.Email);
+
+                await _userManager.AddToRoleAsync(createdUser, "User");
+
                 string code = await _userManager.GenerateEmailConfirmationTokenAsync(createdUser);
                 code = EncodeToken(code);
-                //Log.Information(code);
                 await _emailService.SendEmailAsync(credentials.Email, "Confirm your email",
                     $"Please confirm your account by using this token {code}."); 
 

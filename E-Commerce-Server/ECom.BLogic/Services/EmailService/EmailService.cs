@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 using MimeKit;
 using Serilog;
+using Serilog.Context;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,16 +19,17 @@ namespace ECom.BLogic.Services.EmailService
     public class EmailService: IEmailService
     {
         private readonly SmtpServerSettings _settings;
-        public EmailService(IOptions<SmtpServerSettings> settings) 
+        private SmtpClient _client;
+        public EmailService(IOptions<SmtpServerSettings> settings, SmtpClient client)
         {
             _settings = settings.Value;
+            _client = client;
         }
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         { 
 
             MailMessage msg = new MailMessage();
-            using (System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient())
-            {
+            
                 try
                 {
                     msg.Subject = subject;
@@ -35,21 +37,20 @@ namespace ECom.BLogic.Services.EmailService
                     msg.From = new MailAddress("Ecom@mail.com");
                     msg.To.Add(toEmail);
                     msg.IsBodyHtml = true;
-                    client.Host = _settings.Host;
+                    _client.Host = _settings.Host;
                     System.Net.NetworkCredential basicauthenticationinfo = new System.Net.NetworkCredential(_settings.Email, _settings.Password);
-                    client.Port = int.Parse(_settings.Port);
-                    client.EnableSsl = true;
-                    client.UseDefaultCredentials = false;
-                    client.Credentials = basicauthenticationinfo;
-                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    client.Send(msg);
+                    _client.Port = int.Parse(_settings.Port);
+                    _client.EnableSsl = true;
+                    _client.UseDefaultCredentials = false;
+                    _client.Credentials = basicauthenticationinfo;
+                    _client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    await _client.SendMailAsync(msg);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    //Console.WriteLine(ex.Message);
                     Log.Error(ex.Message);
-                }
-            }
+                }           
         }
     }
 }
