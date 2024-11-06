@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.Data", "E-Commerce-Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.Test", "E-Commerce-Server-Tests\ECom.Test.csproj", "{B666C710-A915-4C16-9928-0603B3472988}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECom.BLogic", "ECom.BLogic\ECom.BLogic.csproj", "{E39289DB-C615-447D-9FD3-BA5037B49FEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.BLogic", "ECom.BLogic\ECom.BLogic.csproj", "{E39289DB-C615-447D-9FD3-BA5037B49FEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.Configuration", "Ecom.Configuration\ECom.Configuration.csproj", "{2C8A1720-A540-4C6A-97ED-585032C1EBB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECom.Constants", "ECom.Constants\ECom.Constants.csproj", "{17BA4E86-DFDA-4DA6-832E-539AB4964A34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECom.Extensions", "ECom.Extensions\ECom.Extensions.csproj", "{479768B6-29A9-4C42-B67B-E13AB1C81A45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +39,18 @@ Global
 		{E39289DB-C615-447D-9FD3-BA5037B49FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E39289DB-C615-447D-9FD3-BA5037B49FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E39289DB-C615-447D-9FD3-BA5037B49FEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C8A1720-A540-4C6A-97ED-585032C1EBB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8A1720-A540-4C6A-97ED-585032C1EBB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C8A1720-A540-4C6A-97ED-585032C1EBB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C8A1720-A540-4C6A-97ED-585032C1EBB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17BA4E86-DFDA-4DA6-832E-539AB4964A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17BA4E86-DFDA-4DA6-832E-539AB4964A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17BA4E86-DFDA-4DA6-832E-539AB4964A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17BA4E86-DFDA-4DA6-832E-539AB4964A34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{479768B6-29A9-4C42-B67B-E13AB1C81A45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479768B6-29A9-4C42-B67B-E13AB1C81A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479768B6-29A9-4C42-B67B-E13AB1C81A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479768B6-29A9-4C42-B67B-E13AB1C81A45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

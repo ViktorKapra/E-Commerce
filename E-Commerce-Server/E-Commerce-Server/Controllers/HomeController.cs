@@ -1,31 +1,25 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Net;
-using System.Reflection;
-using System.Text;
-
 
 namespace ECom.API.Controllers
 {
 
     [ApiController]
-
+    [Route("/api/home")]
+    [Authorize(Roles = "Admin")]
     public class HomeController : ControllerBase
     {
         private readonly IMapper _mapper;
         public HomeController(IMapper mapper)
         {
             _mapper = mapper;
-            
+
         }
 
         [HttpGet]
-        [Route("/")]
-        [Route("/[controller]")]
-        [Route("/[controller]/[action]")]
         public IActionResult GetInfo()
         {
 
@@ -34,7 +28,5 @@ namespace ECom.API.Controllers
             Log.Information("Method GetInfo was approached by " + clientString);
             return Content("Hello world");
         }
-
-
     }
 }
