@@ -32,7 +32,7 @@ namespace ECom.BLogic.Services.Authentication
                 Log.Error(notFound.Description);
                 return IdentityResult.Failed(notFound);
             }
-            string codeDecoded = TokenExt.DecodeToken(credentials.ConfirmationCode);
+            string codeDecoded = credentials.ConfirmationCode.DecodeToken();
             IdentityResult result = await _userManager.ConfirmEmailAsync(user, codeDecoded);
             return result;
         }
@@ -61,7 +61,7 @@ namespace ECom.BLogic.Services.Authentication
                 await _userManager.AddToRoleAsync(createdUser, "User");
 
                 string code = await _userManager.GenerateEmailConfirmationTokenAsync(createdUser);
-                code = TokenExt.EncodeToken(code);
+                code = code.EncodeToken();
                 await _emailService.SendEmailAsync(credentials.Email, "Confirm your email",
                     $"Please confirm your account by using this token {code}.");
             }

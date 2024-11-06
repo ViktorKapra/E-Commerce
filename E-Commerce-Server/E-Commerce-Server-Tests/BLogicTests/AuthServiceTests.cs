@@ -114,7 +114,7 @@ namespace ECom.Test.BLogicTests
             var fixture = new Fixture();
             var emailCredits = new EmailConfirmCredentials { Email = email, ConfirmationCode = code };
             var fakeUser = fixture.Create<EComUser>();
-            var decodedToken = TokenExt.DecodeToken(code);
+            var decodedToken = code.DecodeToken();
             A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult(fakeUser));
 
             //Act
