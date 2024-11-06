@@ -32,5 +32,6 @@ namespace ECom.Test.BLogicTests
             //A.CallTo(() => _client.SendMailAsync(A<MailMessage>._)).MustHaveHappenedOnceExactly();
             // To be implemented
         }
+
     }
 }

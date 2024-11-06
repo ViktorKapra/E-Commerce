@@ -53,7 +53,7 @@ namespace ECom.API.Controllers
             var result = await _authenticationService.LoginAsync(user);
             if (result.Succeeded)
             {
-                return Content(result.ToString());
+                return Ok();
             }
             return Unauthorized();
         }
@@ -67,7 +67,7 @@ namespace ECom.API.Controllers
             var result = await _authenticationService.RegisterAsync(user);
             if (result.Succeeded)
             {
-                return Content(result.ToString());
+                return Created();
             }
             string errorMessage = result != null ? String.Join(' ', result.Errors.Select(x => x.Description).ToList()) : "Registration Failed";
             Log.Error(errorMessage);
