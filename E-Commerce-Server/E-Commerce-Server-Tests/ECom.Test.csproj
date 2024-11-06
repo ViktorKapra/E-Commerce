@@ -23,6 +23,7 @@
     <ProjectReference Include="..\E-Commerce-Data\ECom.Data.csproj" />
     <ProjectReference Include="..\ECom.BLogic\ECom.BLogic.csproj" />
     <ProjectReference Include="..\E-Commerce-Server\ECom.API.csproj" />
+    <ProjectReference Include="..\ECom.Extensions\ECom.Extensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

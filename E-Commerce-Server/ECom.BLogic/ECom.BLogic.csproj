@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\E-Commerce-Data\ECom.Data.csproj" />
     <ProjectReference Include="..\Ecom.Configuration\ECom.Configuration.csproj" />
+    <ProjectReference Include="..\ECom.Extensions\ECom.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

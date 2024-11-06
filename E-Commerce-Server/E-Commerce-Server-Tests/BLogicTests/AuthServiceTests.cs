@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FakeItEasy;
-using ECom.BLogic.Services.Models;
+﻿using AutoFixture;
 using ECom.BLogic.Services.Authentication;
-using ECom.Data;
-using ECom.BLogic.Services.EmailService;
-using AutoFixture;
-using Microsoft.AspNetCore.WebUtilities;
+using ECom.BLogic.Services.Interfaces;
+using ECom.BLogic.Services.Models;
+using ECom.Data.Account;
+using ECom.Extensions;
+using FakeItEasy;
+using Microsoft.AspNetCore.Identity;
 
 namespace ECom.Test.BLogicTests
 {
@@ -25,11 +20,11 @@ namespace ECom.Test.BLogicTests
         {
             _userManager = A.Fake<UserManager<EComUser>>();
             _signInManager = A.Fake<SignInManager<EComUser>>();
-            _emailService = A.Fake<IEmailService>(); 
-            _authService = new AuthService(_signInManager, _userManager,_emailService);
+            _emailService = A.Fake<IEmailService>();
+            _authService = new AuthService(_signInManager, _userManager, _emailService);
         }
         public static IEnumerable<object[]> userCredentials =>
-            new List<object[]>{ new object[] { "test@example.com", "Test@1234" } };
+            new List<object[]> { new object[] { "test@example.com", "Test@1234" } };
 
         [Theory]
         [MemberData(nameof(userCredentials))]
@@ -46,7 +41,7 @@ namespace ECom.Test.BLogicTests
             //Act
             await _authService.RegisterAsync(credentials);
 
-            //Assert 
+            //Assert
             A.CallTo(() => _userManager.GenerateEmailConfirmationTokenAsync(
                 A<EComUser>.Ignored))
                 .MustHaveHappenedOnceExactly();
@@ -54,10 +49,10 @@ namespace ECom.Test.BLogicTests
 
         [Theory]
         [MemberData(nameof(userCredentials))]
-        public async void Login_Invokes_SignInManager_Test(string testEmail,string testPassword)
+        public async void Login_Invokes_SignInManager_Test(string testEmail, string testPassword)
         {
             //Arrange
-            A.CallTo(() => _signInManager.PasswordSignInAsync(testEmail,testPassword,false,false))
+            A.CallTo(() => _signInManager.PasswordSignInAsync(testEmail, testPassword, false, false))
             .Returns(Task.FromResult(SignInResult.Success));
 
             UserCredentials credentials = new UserCredentials { Email = testEmail, Password = testPassword };
@@ -65,13 +60,13 @@ namespace ECom.Test.BLogicTests
             //Act
             var result = await _authService.LoginAsync(credentials);
 
-            //Assert 
+            //Assert
             Assert.True(result.Succeeded);
         }
 
         [Theory]
         [MemberData(nameof(userCredentials))]
-        public async  void Register_Creates_User_With_Role_Test(string testEmail, string testPassword)
+        public async void Register_Creates_User_With_Role_Test(string testEmail, string testPassword)
         {
             //Arrange
 
@@ -81,11 +76,11 @@ namespace ECom.Test.BLogicTests
             .Returns(Task.FromResult(IdentityResult.Success));
 
             UserCredentials credentials = new UserCredentials { Email = testEmail, Password = testPassword };
-            
-            //Act
-             IdentityResult result = await _authService.RegisterAsync(credentials);
 
-            //Assert 
+            //Act
+            IdentityResult result = await _authService.RegisterAsync(credentials);
+
+            //Assert
             A.CallTo(() => _userManager.AddToRoleAsync(A<EComUser>.Ignored, "User"))
                 .MustHaveHappenedOnceExactly();
             Assert.True(result.Succeeded);
@@ -107,7 +102,7 @@ namespace ECom.Test.BLogicTests
             //Act
             IdentityResult result = await _authService.RegisterAsync(credentials);
 
-            //Assert 
+            //Assert
             A.CallTo(() => _emailService.SendEmailAsync(testEmail, A<string>.Ignored, A<string>.Ignored))
                 .MustHaveHappenedOnceExactly();
         }
@@ -119,14 +114,14 @@ namespace ECom.Test.BLogicTests
             var fixture = new Fixture();
             var emailCredits = new EmailConfirmCredentials { Email = email, ConfirmationCode = code };
             var fakeUser = fixture.Create<EComUser>();
-            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(emailCredits.ConfirmationCode));
-
+            var decodedToken = TokenExt.DecodeToken(code);
             A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult(fakeUser));
+
             //Act
             IdentityResult result = await _authService.ConfirmEmailAsync(emailCredits);
 
             //Assert
-            A.CallTo(() => _userManager.ConfirmEmailAsync(fakeUser,decodedToken))
+            A.CallTo(() => _userManager.ConfirmEmailAsync(fakeUser, decodedToken))
                 .MustHaveHappenedOnceExactly();
         }
     }

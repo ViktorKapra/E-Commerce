@@ -36,6 +36,7 @@
     <ProjectReference Include="..\ECom.BLogic\ECom.BLogic.csproj" />
     <ProjectReference Include="..\Ecom.Configuration\ECom.Configuration.csproj" />
     <ProjectReference Include="..\ECom.Constants\ECom.Constants.csproj" />
+    <ProjectReference Include="..\ECom.Extensions\ECom.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

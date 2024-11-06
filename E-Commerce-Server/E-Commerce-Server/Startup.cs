@@ -1,21 +1,18 @@
 ﻿using AutoMapper;
 using ECom.API.Mapper;
+using ECom.BLogic.Services.Authentication;
 using ECom.BLogic.Services.EmailService;
-using ECom.Data;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using ECom.BLogic.Services.Interfaces;
 using ECom.Configuration.Extenstions;
 using ECom.Configuration.Settings;
+using ECom.Data;
+using ECom.Data.Account;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Net.Mail;
 
 namespace ECom.API
@@ -48,24 +45,18 @@ namespace ECom.API
               .WriteTo.TestCorrelator()
               .CreateLogger();
 
-            // services.AddAuthentication().AddIdentityCookies();
-
             services.AddSerilog();
 
             var connectionString = Configuration["ConnectionStrings:DefaultConnection"] ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
-
-            //services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddHealthChecks().AddSqlServer(connectionString);
 
             services.AddDefaultIdentity<EComUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<EComRole>()
-         .AddEntityFrameworkStores<ApplicationDbContext>();
-
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication(options =>
             {
@@ -80,11 +71,11 @@ namespace ECom.API
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
             });
-            
+
             services.ConfigureAndValidate<SmtpServerSettings>(Configuration);
 
-            services.AddScoped<BLogic.Services.Authentication.IAuthService,
-                                 BLogic.Services.Authentication.AuthService>();
+            services.AddScoped<IAuthService, AuthService>();
+
             services.AddScoped<IEmailService, EmailService>();
 
             services.AddControllers();
@@ -96,9 +87,7 @@ namespace ECom.API
                 mc.AddProfile(new MappingProfile());
             }).CreateMapper());
             services.AddTransient<SmtpClient>();
-
         }
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -114,8 +103,6 @@ namespace ECom.API
                 app.UseHsts();
 
             }
-
-
             app.UseHttpsRedirection();
 
             app.UseHealthChecks("/api/health", new HealthCheckOptions
@@ -129,14 +116,11 @@ namespace ECom.API
 
             app.UseAuthorization();
 
-
             //Configures endpoint matching to rely on attribute routing
             app.UseEndpoints(endpoints =>
             {
                 { endpoints.MapDefaultControllerRoute(); }
             });
-
-
         }
     }
 }

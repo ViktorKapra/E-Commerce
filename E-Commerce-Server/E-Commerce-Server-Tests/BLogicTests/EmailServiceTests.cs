@@ -1,17 +1,8 @@
-﻿using ECom.Configuration.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ECom.BLogic.Services.EmailService;
+using ECom.Configuration.Settings;
 using FakeItEasy;
-using ECom.Data;
-using Microsoft.AspNetCore.Identity;
-using ECom.BLogic.Services.EmailService;
 using Microsoft.Extensions.Options;
-using Serilog;
-using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net.Mail;
 namespace ECom.Test.BLogicTests
 {
     public class EmailServiceTests

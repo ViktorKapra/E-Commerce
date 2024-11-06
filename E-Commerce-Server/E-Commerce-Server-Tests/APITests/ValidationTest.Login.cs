@@ -1,18 +1,10 @@
 ﻿using AutoFixture;
 using ECom.API.DTO.AuthenticationDTO;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ECom.Test
 {
-    
-
     public partial class ModelValidationTests
     {
         [Fact]
@@ -23,7 +15,7 @@ namespace ECom.Test
             string password = null;
             LoginDTO request = new LoginDTO();
             var errors = new List<ValidationResult>();
-            //Act 
+            //Act
             request.Email = email;
             request.Password = password;
             Validator.TryValidateObject(request, new ValidationContext(request), errors);
@@ -70,7 +62,7 @@ namespace ECom.Test
             };
             var errors = new List<ValidationResult>();
 
-            //Act 
+            //Act
             Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
             List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
             //Assert
@@ -93,7 +85,7 @@ namespace ECom.Test
             //Act
             Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
             List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
-            Assert.True( failedMembers.Contains("Password"));
+            Assert.True(failedMembers.Contains("Password"));
         }
 
         [Theory]

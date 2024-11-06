@@ -1,13 +1,6 @@
 ﻿using AutoFixture;
 using ECom.API.DTO.AuthenticationDTO;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ECom.Test
 {
@@ -21,7 +14,7 @@ namespace ECom.Test
             string password = null;
             RegisterDTO request = new RegisterDTO();
             var errors = new List<ValidationResult>();
-            //Act 
+            //Act
             request.Email = email;
             request.Password = password;
             Validator.TryValidateObject(request, new ValidationContext(request), errors);
@@ -34,18 +27,18 @@ namespace ECom.Test
             //Arange
             var fixture = new Fixture();
             RegisterDTO request = new RegisterDTO()
-            { 
-              Email = "wrongemail",
-              Password = fixture.Create<string>()
+            {
+                Email = "wrongemail",
+                Password = fixture.Create<string>()
             };
             var errors = new List<ValidationResult>();
 
             //Act
-            Validator.TryValidateObject(request, new ValidationContext(request), errors,true);
-            List<string> failedMembers = errors.SelectMany(x=>x.MemberNames).ToList();
-            
+            Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
+            List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
+
             //Assert
-           Assert.Contains("Email", failedMembers);
+            Assert.Contains("Email", failedMembers);
         }
 
         [Fact]
@@ -78,11 +71,11 @@ namespace ECom.Test
             {
                 Email = fixture.Create<string>(),
                 Password = fixture.Create<string>().Substring(0, 5)
-            }; 
+            };
             var errors = new List<ValidationResult>();
 
-            //Act 
-            Validator.TryValidateObject(request, new ValidationContext(request), errors,true);
+            //Act
+            Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
             List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
             //Assert
             Assert.Contains("Password", failedMembers);
@@ -127,6 +120,5 @@ namespace ECom.Test
             //Assert
             Assert.False(failedMembers.Contains("Password"));
         }
-        
     }
 }
