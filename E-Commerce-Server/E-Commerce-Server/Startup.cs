@@ -3,7 +3,9 @@ using ECom.API.Mapper;
 using ECom.BLogic.Services.Authentication;
 using ECom.BLogic.Services.EmailService;
 using ECom.BLogic.Services.Interfaces;
+using ECom.BLogic.Services.Profile;
 using ECom.Configuration.Extenstions;
+using ECom.Configuration.JSONformater;
 using ECom.Configuration.Settings;
 using ECom.Data;
 using ECom.Data.Account;
@@ -78,6 +80,8 @@ namespace ECom.API
 
             services.AddScoped<IEmailService, EmailService>();
 
+            services.AddScoped<IUserService, UserService>();
+
             services.AddControllers();
 
             services.AddSwaggerGen();
@@ -86,7 +90,13 @@ namespace ECom.API
             {
                 mc.AddProfile(new MappingProfile());
             }).CreateMapper());
+
             services.AddTransient<SmtpClient>();
+
+            services.AddControllers(options =>
+            {
+                options.InputFormatters.Insert(0, JSONFormater.GetJsonPatchInputFormatter());
+            });
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
