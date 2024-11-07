@@ -10,7 +10,14 @@ namespace ECom.API.DTOs.ProfileDTOs
         [RegularExpression(ValidationConsts.EMAIL_REGEX,
             ErrorMessage = "Email address is not valid!")]
         public string Email { get; set; }
+
+
+        [RegularExpression(ValidationConsts.NAME_REGEX,
+        ErrorMessage = "Only letters are allowed.")]
         public string? FirstName { get; set; }
+
+        [RegularExpression(ValidationConsts.NAME_REGEX,
+            ErrorMessage = "Only letters are allowed.")]
         public string? LastName { get; set; }
 
         [RegularExpression(ValidationConsts.PHONE_REGEX,

@@ -3,7 +3,7 @@ using ECom.API.DTO.AuthenticationDTO;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace ECom.Test
+namespace ECom.Test.APITests
 {
     public partial class ModelValidationTests
     {
@@ -124,5 +124,20 @@ namespace ECom.Test
             new object[] { "G?YDm%!4Oh`C" },new object[] { "0mV;L7qIFw%j" },new object[] { "Uu0,#cLB_{Iy" },
             new object[] { "O>Rvtk_9ZmPM" }
         };
+
+        public static IEnumerable<object[]> wrongEmails =>
+        new List<object[]>
+        {
+            new object[]{"kaplins" }, new object[] { "empry@" },new object[] { "@wrong.com" },
+            new object[] { "wrong@.com" },new object[] { "wrong@com" },new object[] { "wrong.com" }
+        };
+
+        public static IEnumerable<object[]> correctEmails =>
+        new List<object[]>
+        {
+            new object[]{"correct@mail.com" },new object[] { "Mistes.Sker@mail.com" },
+            new object[] { "correct32@kol.mu" }
+        };
+
     }
 }
