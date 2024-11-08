@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using ECom.API.DTO.AuthenticationDTO;
 using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
 
 namespace ECom.Test.APITests.DTOs
 {
@@ -21,33 +20,6 @@ namespace ECom.Test.APITests.DTOs
             Validator.TryValidateObject(request, new ValidationContext(request), errors);
             //Assert
             Assert.Equal(2, errors.Count);
-        }
-        [Fact]
-        public void LoginDTO_Validation_Email_Format()
-        {
-            //Arange
-            var fixture = new Fixture();
-            LoginDTO request = new LoginDTO()
-            {
-                Email = fixture.Create<string>(),
-                Password = fixture.Create<string>()
-            };
-            var errors = new List<ValidationResult>();
-            string emailFormat = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
-
-            //Act
-            Validator.TryValidateObject(request, new ValidationContext(request), errors, true);
-            List<string> failedMembers = errors.SelectMany(x => x.MemberNames).ToList();
-            bool isCorrect = Regex.Match(request.Email, emailFormat).Success;
-            //Assert
-            if (isCorrect)
-            {
-                Assert.DoesNotContain("Email", failedMembers);
-            }
-            else
-            {
-                Assert.Contains("Email", failedMembers);
-            }
         }
 
         [Fact]

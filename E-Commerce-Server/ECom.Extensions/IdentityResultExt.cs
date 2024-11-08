@@ -12,8 +12,10 @@ namespace ECom.Extensions
             {
                 errors.AppendLine(error.Description);
             }
-            if (errors.Length == 0) { errors.Append(defaultError); }
-
+            if (errors.Length == 0)
+            {
+                errors.Append(defaultError);
+            }
             return errors.ToString();
         }
     }

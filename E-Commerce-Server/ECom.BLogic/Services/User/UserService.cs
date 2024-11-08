@@ -9,14 +9,12 @@ namespace ECom.BLogic.Services.Profile
     {
         private readonly SignInManager<EComUser> _signInManager;
         private readonly UserManager<EComUser> _userManager;
-        private readonly IEmailService _emailService;
 
         public UserService(SignInManager<EComUser> signInManager,
-             UserManager<EComUser> userManager, IEmailService emailService)
+             UserManager<EComUser> userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            _emailService = emailService;
         }
 
         public async Task<EComUser> GetProfileInfoAsync(ClaimsPrincipal userClaims)

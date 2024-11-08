@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-//using Microsoft.AspNetCore.Components;
 
 namespace ECom.API.Controllers
 {
