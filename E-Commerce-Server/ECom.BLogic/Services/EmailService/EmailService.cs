@@ -1,5 +1,5 @@
-﻿using ECom.BLogic.Services.Interfaces;
-using ECom.Configuration.Settings;
+﻿using ECom.BLogic.Services.EmailService.Settings;
+using ECom.BLogic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System.Net.Mail;

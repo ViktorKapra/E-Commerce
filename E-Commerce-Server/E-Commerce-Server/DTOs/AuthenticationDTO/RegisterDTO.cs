@@ -4,7 +4,7 @@ namespace ECom.API.DTO.AuthenticationDTO
     public class RegisterDTO
     {
         [Required]
-        [StringLength(320, ErrorMessage = default)]
+        [StringLength(320)]
         [RegularExpression(Constants.ValidationConsts.EMAIL_REGEX,
           ErrorMessage = "Email address is not correct")]
         public string Email { get; set; }

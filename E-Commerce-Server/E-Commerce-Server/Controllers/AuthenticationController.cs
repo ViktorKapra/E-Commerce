@@ -3,11 +3,11 @@ using ECom.API.DTO.AuthenticationDTO;
 using ECom.API.DTOs.AuthenticationDTO;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Services.Models;
+using ECom.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-//using Microsoft.AspNetCore.Components;
 
 namespace ECom.API.Controllers
 {
@@ -30,7 +30,6 @@ namespace ECom.API.Controllers
         [HttpGet("emailConfirm")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] EmailConfirmDTO confirmDTO)
         {
-
             Log.Information("Confirmation is reached!");
             EmailConfirmCredentials credentials = _mapper.Map<EmailConfirmCredentials>(confirmDTO);
             IdentityResult result = await _authenticationService.ConfirmEmailAsync(credentials);
@@ -40,7 +39,7 @@ namespace ECom.API.Controllers
             }
             else
             {
-                string errorMessage = result != null ? String.Join(' ', result.Errors.Select(x => x.Description).ToList()) : "Confirmation Failed";
+                string errorMessage = result.GetErrorsDescriptions("Confirmation Failed!");
                 Log.Error(errorMessage);
                 return Unauthorized(errorMessage);
             }
@@ -61,15 +60,13 @@ namespace ECom.API.Controllers
         [HttpPost("signUp")]
         public async Task<IActionResult> Register(RegisterDTO request)
         {
-            //  if (ModelState.IsValid)
-            //{
             UserCredentials user = _mapper.Map<UserCredentials>(request);
             var result = await _authenticationService.RegisterAsync(user);
             if (result.Succeeded)
             {
                 return Created();
             }
-            string errorMessage = result != null ? String.Join(' ', result.Errors.Select(x => x.Description).ToList()) : "Registration Failed";
+            string errorMessage = result.GetErrorsDescriptions("Registration Failed");
             Log.Error(errorMessage);
             return BadRequest(errorMessage);
         }

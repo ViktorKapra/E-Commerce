@@ -2,7 +2,7 @@
 using ECom.API.DTO.AuthenticationDTO;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECom.Test
+namespace ECom.Test.APITests.DTOs
 {
     public partial class ModelValidationTests
     {
@@ -21,14 +21,15 @@ namespace ECom.Test
             //Assert
             Assert.Equal(2, errors.Count);
         }
-        [Fact]
-        public void RegisterDTO_Validation_IncorrectEmail_Format()
+        [Theory]
+        [MemberData(nameof(wrongEmails))]
+        public void RegisterDTO_Validation_IncorrectEmail_Format(string email)
         {
             //Arange
             var fixture = new Fixture();
             RegisterDTO request = new RegisterDTO()
             {
-                Email = "wrongemail",
+                Email = email,
                 Password = fixture.Create<string>()
             };
             var errors = new List<ValidationResult>();
@@ -41,14 +42,15 @@ namespace ECom.Test
             Assert.Contains("Email", failedMembers);
         }
 
-        [Fact]
-        public void RegisterDTO_Validation_CorrectEmail_Format()
+        [Theory]
+        [MemberData(nameof(correctEmails))]
+        public void RegisterDTO_Validation_CorrectEmail_Format(string email)
         {
             //Arange
             var fixture = new Fixture();
             RegisterDTO request = new RegisterDTO()
             {
-                Email = "test@mail.com",
+                Email = email,
                 Password = fixture.Create<string>()
             };
             var errors = new List<ValidationResult>();
