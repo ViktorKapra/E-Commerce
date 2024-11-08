@@ -34,27 +34,27 @@ namespace ECom.API.Controllers
             UserDTO userResponce = _mapper.Map<UserDTO>(user);
             return Ok(userResponce);
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateProfileInfo(UserDTO profileInfo)
         {
-            if (ModelState.IsValid == false)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             EComUser user = await _userService.GetProfileInfoAsync(HttpContext.User);
             _mapper.Map(profileInfo, user);
             var result = await _userService.UpdateProfileInfoAsync(user);
-            if (result.Succeeded)
-            {
-                return Ok();
-            }
-            else
+
+            if (!result.Succeeded)
             {
                 string errorMessage = result.GetErrorsDescriptions("Updating Failed");
                 Log.Error(errorMessage);
                 return BadRequest(errorMessage);
             }
+            return Ok();
         }
+
         [HttpPatch("password")]
         public async Task<IActionResult> ChangePassword([FromBody] JsonPatchDocument<ChangePasswordDTO> passwordPatch)
         {
@@ -67,10 +67,7 @@ namespace ECom.API.Controllers
             {
                 return Ok();
             }
-            else
-            {
-                errorMessage.Append(result.GetErrorsDescriptions("Password change failed"));
-            }
+            errorMessage.Append(result.GetErrorsDescriptions("Password change failed"));
             Log.Error(errorMessage.ToString());
             return BadRequest(errorMessage.ToString());
         }

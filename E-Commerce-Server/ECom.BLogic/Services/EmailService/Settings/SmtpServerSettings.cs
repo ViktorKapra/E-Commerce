@@ -1,6 +1,6 @@
 ﻿using ECom.Constants;
 using System.ComponentModel.DataAnnotations;
-namespace ECom.Configuration.Settings
+namespace ECom.BLogic.Services.EmailService.Settings
 {
     public class SmtpServerSettings
     {
