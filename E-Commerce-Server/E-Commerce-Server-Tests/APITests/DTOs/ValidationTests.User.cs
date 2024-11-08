@@ -2,7 +2,7 @@
 using ECom.API.DTOs.ProfileDTOs;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECom.Test.APITests
+namespace ECom.Test.APITests.DTOs
 {
     public partial class ModelValidationTests
     {
