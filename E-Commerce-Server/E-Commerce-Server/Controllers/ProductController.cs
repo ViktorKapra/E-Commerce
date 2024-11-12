@@ -34,6 +34,7 @@ namespace ECom.API.Controllers
             var platforms = await productService.GetTopPlatformsAsync(platformCount);
             return Ok(platforms.Select(x => x.ToString()).ToList());
         }
+
         /// <summary>
         /// Returns the found products based on the search query
         /// </summary>
