@@ -1,5 +1,5 @@
 ﻿using ECom.BLogic.Services.EmailService;
-using ECom.Configuration.Settings;
+using ECom.BLogic.Services.EmailService.Settings;
 using FakeItEasy;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;

@@ -19,6 +19,13 @@ namespace ECom.API.Controllers
 
         }
 
+        /// <summary>
+        /// Retrieves information from the server.
+        /// </summary>
+        /// <remarks>
+        /// This action retrieves information from the server and logs the IP address of the client.
+        /// </remarks>
+        /// <response code="200"> Returns content ,,Hello world''</response>
         [HttpGet]
         public IActionResult GetInfo()
         {

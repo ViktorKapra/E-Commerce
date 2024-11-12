@@ -4,6 +4,7 @@ using ECom.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECom.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241108191508_Adding_Products")]
+    partial class Adding_Products
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,98 +165,6 @@ namespace ECom.Data.Migrations
                         .IsDescending();
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DateCreated = new DateOnly(2021, 1, 1),
-                            Name = "PC game 1",
-                            Platform = 1,
-                            Price = 50m,
-                            TotalRating = 4.5m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DateCreated = new DateOnly(2021, 1, 2),
-                            Name = "PC game 2",
-                            Platform = 1,
-                            Price = 60m,
-                            TotalRating = 4.6m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DateCreated = new DateOnly(2021, 1, 3),
-                            Name = "PC game 3",
-                            Platform = 1,
-                            Price = 70m,
-                            TotalRating = 4.7m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DateCreated = new DateOnly(2018, 1, 4),
-                            Name = "Mobile game 1",
-                            Platform = 2,
-                            Price = 30m,
-                            TotalRating = 4.8m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DateCreated = new DateOnly(2021, 1, 5),
-                            Name = "Mobile game 2",
-                            Platform = 2,
-                            Price = 40m,
-                            TotalRating = 4.9m
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DateCreated = new DateOnly(2020, 1, 6),
-                            Name = "Mobile game 3",
-                            Platform = 2,
-                            Price = 50m,
-                            TotalRating = 5.0m
-                        },
-                        new
-                        {
-                            Id = 7,
-                            DateCreated = new DateOnly(2021, 1, 7),
-                            Name = "Console game 1",
-                            Platform = 0,
-                            Price = 60m,
-                            TotalRating = 4.1m
-                        },
-                        new
-                        {
-                            Id = 8,
-                            DateCreated = new DateOnly(2021, 1, 8),
-                            Name = "Console game 2",
-                            Platform = 0,
-                            Price = 70m,
-                            TotalRating = 4.2m
-                        },
-                        new
-                        {
-                            Id = 9,
-                            DateCreated = new DateOnly(2021, 1, 9),
-                            Name = "VR game 1",
-                            Platform = 3,
-                            Price = 80m,
-                            TotalRating = 4.3m
-                        },
-                        new
-                        {
-                            Id = 10,
-                            DateCreated = new DateOnly(2023, 1, 10),
-                            Name = "Web game 1",
-                            Platform = 4,
-                            Price = 90m,
-                            TotalRating = 4.4m
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

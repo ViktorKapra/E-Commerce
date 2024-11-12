@@ -1,6 +1,7 @@
 ﻿using ECom.BLogic.Services.Interfaces;
 using ECom.Data.Account;
 using Microsoft.AspNetCore.Identity;
+using Serilog;
 using System.Security.Claims;
 
 namespace ECom.BLogic.Services.Profile
@@ -19,7 +20,13 @@ namespace ECom.BLogic.Services.Profile
 
         public async Task<EComUser> GetProfileInfoAsync(ClaimsPrincipal userClaims)
         {
-            return await _userManager.GetUserAsync(userClaims);
+            var result = await _userManager.GetUserAsync(userClaims);
+            if (result == null)
+            {
+                Log.Error("User not found.");
+                throw new Exception("User not found.");
+            }
+            return result;
         }
         public async Task<IdentityResult> UpdateProfileInfoAsync(EComUser user)
         {

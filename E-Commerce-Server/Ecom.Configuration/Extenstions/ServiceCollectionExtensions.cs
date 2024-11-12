@@ -2,6 +2,7 @@
 using ECom.BLogic.Services.EmailService;
 using ECom.BLogic.Services.EmailService.Settings;
 using ECom.BLogic.Services.Interfaces;
+using ECom.BLogic.Services.Product;
 using ECom.BLogic.Services.Profile;
 using ECom.Data;
 using ECom.Data.Account;
@@ -42,6 +43,7 @@ namespace ECom.Configuration.Extenstions
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddTransient<SmtpClient>();
             return services;
         }
