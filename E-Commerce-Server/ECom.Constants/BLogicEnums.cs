@@ -2,7 +2,7 @@
 {
     public static class BLogicEnums
     {
-        public enum FilterOpeations
+        public enum FilterOperations
         {
             GreaterThan,
             LessThan,
