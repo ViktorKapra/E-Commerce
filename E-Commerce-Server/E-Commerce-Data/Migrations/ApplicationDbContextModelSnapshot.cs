@@ -144,9 +144,11 @@ namespace ECom.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalRating")
+                        .HasPrecision(2, 1)
                         .HasColumnType("decimal(2,1)");
 
                     b.HasKey("Id");

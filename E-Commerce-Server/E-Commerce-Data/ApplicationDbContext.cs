@@ -19,6 +19,21 @@ namespace ECom.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.Name);
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.Platform);
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.DateCreated).IsDescending();
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.TotalRating).IsDescending();
+            modelBuilder.Entity<Product>()
+                .Property(p => p.TotalRating)
+                .HasPrecision(2, 1);
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasPrecision(18, 2);
+
             Seeder seeder = new Seeder(modelBuilder);
             seeder.SeedProducts();
 
