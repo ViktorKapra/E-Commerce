@@ -1,4 +1,6 @@
-﻿using ECom.BLogic.Services.Interfaces;
+﻿using AutoMapper;
+using ECom.BLogic.Services.DTOs;
+using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Templates;
 using ECom.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +12,11 @@ namespace ECom.BLogic.Services.Product
     public class ProductService : IProductService
     {
         public readonly ApplicationDbContext _context;
-        public ProductService(ApplicationDbContext context)
+        public readonly IMapper _mapper;
+        public ProductService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<List<Platform>> GetTopPlatformsAsync(int count)
         {
@@ -30,14 +34,17 @@ namespace ECom.BLogic.Services.Product
                         .ToListAsync();
         }
 
-        public async Task<List<ECom.Data.Models.Product>> SearchAsync(SearchQuery<ECom.Data.Models.Product> query)
+        public async Task<List<ProductDTO>> SearchAsync(ProductSearchDTO searchDTO)
         {
-            var entity = await _context.Products
+            var query = _mapper.Map<SearchQuery<ECom.Data.Models.Product>>(searchDTO);
+
+            var entities = await _context.Products
                 .Where(query.Expression)
                 .Skip(query.Offset)
                 .Take(query.Limit)
                 .ToListAsync();
-            return entity;
+            var productDTOs = entities.Select(x => _mapper.Map<ProductDTO>(x)).ToList();
+            return productDTOs;
         }
     }
 }

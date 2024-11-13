@@ -1,8 +1,8 @@
 ﻿
 using AutoFixture;
 using AutoMapper;
-using ECom.API.DTOs.ProfileDTOs;
 using ECom.API.Mapper;
+using ECom.BLogic.Services.DTOs;
 using ECom.Data.Account;
 
 namespace ECom.Test.APITests.Mapper

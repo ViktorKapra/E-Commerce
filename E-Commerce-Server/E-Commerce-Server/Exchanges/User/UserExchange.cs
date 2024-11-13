@@ -1,9 +1,9 @@
 ﻿using ECom.Constants;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECom.API.DTOs.ProfileDTOs
+namespace ECom.API.Exchanges.Profile
 {
-    public class UserDTO
+    public class UserExchange
     {
         /// <summary>
         /// The email address of the user.

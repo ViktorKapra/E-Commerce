@@ -1,11 +1,11 @@
 ﻿using ECom.Constants;
 
-namespace ECom.API.DTOs.Templates
+namespace ECom.API.Exchanges.Templates
 {
     /// <summary>
     /// Represents a search query with limit and offset parameters.
     /// </summary>
-    public class SearchDTO
+    public class SearchRequest
     {
         /// <summary>
         /// Gets or sets the maximum number of items to retrieve.

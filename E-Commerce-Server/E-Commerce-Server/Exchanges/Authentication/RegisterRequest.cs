@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace ECom.API.DTO.AuthenticationDTO
+namespace ECom.API.Exchanges.Authentication
 {
-    public class RegisterDTO
+    public class RegisterRequest
     {
         [Required]
         [StringLength(320)]

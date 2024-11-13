@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using ECom.API.DTO.AuthenticationDTO;
-using ECom.API.DTOs.AuthenticationDTO;
-using ECom.API.DTOs.ProductDTOs;
-using ECom.API.DTOs.ProfileDTOs;
-using ECom.BLogic.Services.Models;
+using ECom.API.Exchanges.Authentication;
+using ECom.API.Exchanges.Product;
+using ECom.API.Exchanges.Profile;
+using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Templates;
 using ECom.Constants;
 using ECom.Data.Account;
@@ -16,9 +15,10 @@ namespace ECom.API.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<LoginDTO, UserCredentials>();
-            CreateMap<RegisterDTO, UserCredentials>();
-            CreateMap<EmailConfirmDTO, EmailConfirmCredentials>();
+            CreateMap<LoginRequest, UserCredentialsDTO>();
+            CreateMap<RegisterRequest, UserCredentialsDTO>();
+            CreateMap<EmailConfirmRequest, EmailConfirmDTO>();
+            CreateMap<UserExchange, UserDTO>().ReverseMap();
 
             CreateMap<UserDTO, EComUser>()
                 .ForMember(dest => dest.Id, opt => opt.UseDestinationValue())
@@ -29,8 +29,8 @@ namespace ECom.API.Mapper
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.AddressDelivery, opt => opt.MapFrom(src => src.AddressDelivery));
             CreateMap<EComUser, UserDTO>();
-
-            CreateMap<ProductsSearchDTO, SearchQuery<Product>>()
+            CreateMap<ProductsSearchRequest, ProductSearchDTO>().ReverseMap();
+            CreateMap<ProductSearchDTO, SearchQuery<Product>>()
                 .ConstructUsing(src => new SearchQuery<Product>
                 {
                     Expression = x =>
@@ -42,6 +42,7 @@ namespace ECom.API.Mapper
                 });
             CreateMap<Product, ProductDTO>()
                 .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => src.Platform.GetPlatformString()));
+            CreateMap<ProductDTO, ProductResponse>().ReverseMap();
         }
     }
 }

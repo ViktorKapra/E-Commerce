@@ -1,19 +1,19 @@
 ﻿using AutoFixture;
-using ECom.API.DTOs.ProfileDTOs;
+using ECom.API.Exchanges.Profile;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECom.Test.APITests.DTOs
+namespace ECom.Test.APITests.Exchanges
 {
     public partial class ModelValidationTests
     {
 
         [Theory]
         [MemberData(nameof(wrongEmails))]
-        public void UserDTO_Validation_IncorrectEmail_Format(string email)
+        public void UserExchange_Validation_IncorrectEmail_Format(string email)
         {
             //Arange
             var fixture = new Fixture();
-            UserDTO request = new UserDTO()
+            UserExchange request = new UserExchange()
             {
                 Email = email
             };
@@ -29,11 +29,11 @@ namespace ECom.Test.APITests.DTOs
 
         [Theory]
         [MemberData(nameof(correctEmails))]
-        public void UserDTO_Validation_CorrectEmail_Format(string email)
+        public void UserExchange_Validation_CorrectEmail_Format(string email)
         {
             //Arange
             var fixture = new Fixture();
-            UserDTO request = new UserDTO()
+            UserExchange request = new UserExchange()
             {
                 Email = email
             };
@@ -49,10 +49,10 @@ namespace ECom.Test.APITests.DTOs
 
         [Theory]
         [MemberData(nameof(wrongNames))]
-        public void UserDTO_Validation_Incorrect_LastName_Format(string lastName)
+        public void UserExchange_Validation_Incorrect_LastName_Format(string lastName)
         {
             //Arange
-            UserDTO request = new UserDTO()
+            UserExchange request = new UserExchange()
             {
                 LastName = lastName
             };
@@ -68,10 +68,10 @@ namespace ECom.Test.APITests.DTOs
 
         [Theory]
         [MemberData(nameof(correctNames))]
-        public void UserDTO_Validation_Correct_FirstName_Format(string firstName)
+        public void UserExchange_Validation_Correct_FirstName_Format(string firstName)
         {
             //Arange
-            UserDTO request = new UserDTO()
+            UserExchange request = new UserExchange()
             {
                 FirstName = firstName
             };

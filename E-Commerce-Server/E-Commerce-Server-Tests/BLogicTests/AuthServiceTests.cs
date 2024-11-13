@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using ECom.BLogic.Services.Authentication;
+using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
-using ECom.BLogic.Services.Models;
 using ECom.Data.Account;
 using ECom.Extensions;
 using FakeItEasy;
@@ -36,7 +36,7 @@ namespace ECom.Test.BLogicTests
                 testPassword))
                 .Returns(Task.FromResult(IdentityResult.Success));
 
-            var credentials = new UserCredentials { Email = testEmail, Password = testPassword };
+            var credentials = new UserCredentialsDTO { Email = testEmail, Password = testPassword };
 
             //Act
             await _authService.RegisterAsync(credentials);
@@ -55,7 +55,7 @@ namespace ECom.Test.BLogicTests
             A.CallTo(() => _signInManager.PasswordSignInAsync(testEmail, testPassword, false, false))
             .Returns(Task.FromResult(SignInResult.Success));
 
-            UserCredentials credentials = new UserCredentials { Email = testEmail, Password = testPassword };
+            UserCredentialsDTO credentials = new UserCredentialsDTO { Email = testEmail, Password = testPassword };
 
             //Act
             var result = await _authService.LoginAsync(credentials);
@@ -75,7 +75,7 @@ namespace ECom.Test.BLogicTests
             testPassword))
             .Returns(Task.FromResult(IdentityResult.Success));
 
-            UserCredentials credentials = new UserCredentials { Email = testEmail, Password = testPassword };
+            UserCredentialsDTO credentials = new UserCredentialsDTO { Email = testEmail, Password = testPassword };
 
             //Act
             IdentityResult result = await _authService.RegisterAsync(credentials);
@@ -97,7 +97,7 @@ namespace ECom.Test.BLogicTests
             testPassword))
             .Returns(Task.FromResult(IdentityResult.Success));
 
-            UserCredentials credentials = new UserCredentials { Email = testEmail, Password = testPassword };
+            UserCredentialsDTO credentials = new UserCredentialsDTO { Email = testEmail, Password = testPassword };
 
             //Act
             IdentityResult result = await _authService.RegisterAsync(credentials);
@@ -112,7 +112,7 @@ namespace ECom.Test.BLogicTests
         {
             //Arrange
             var fixture = new Fixture();
-            var emailCredits = new EmailConfirmCredentials { Email = email, ConfirmationCode = code };
+            var emailCredits = new EmailConfirmDTO { Email = email, ConfirmationCode = code };
             var fakeUser = fixture.Create<EComUser>();
             var decodedToken = code.DecodeToken();
             A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult(fakeUser));

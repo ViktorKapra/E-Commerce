@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ECom.API.DTOs.ProductDTOs
+namespace ECom.API.Exchanges.Product
 {
-    public class ProductDTO
+    public class ProductResponse
     {
         public int Id { get; set; }
         /// <summary>

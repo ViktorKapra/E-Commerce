@@ -1,5 +1,5 @@
-﻿using ECom.BLogic.Services.Interfaces;
-using ECom.BLogic.Services.Models;
+﻿using ECom.BLogic.Services.DTOs;
+using ECom.BLogic.Services.Interfaces;
 using ECom.Data.Account;
 using ECom.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +21,7 @@ namespace ECom.BLogic.Services.Authentication
             _emailService = emailService;
         }
 
-        public async Task<IdentityResult> ConfirmEmailAsync(EmailConfirmCredentials credentials)
+        public async Task<IdentityResult> ConfirmEmailAsync(EmailConfirmDTO credentials)
         {
             EComUser? user = await _userManager.FindByEmailAsync(credentials.Email);
 
@@ -37,7 +37,7 @@ namespace ECom.BLogic.Services.Authentication
             return result;
         }
 
-        public async Task<SignInResult> LoginAsync(UserCredentials credentials)
+        public async Task<SignInResult> LoginAsync(UserCredentialsDTO credentials)
         {
             var result = await _signInManager.PasswordSignInAsync(credentials.Email, credentials.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
@@ -47,7 +47,7 @@ namespace ECom.BLogic.Services.Authentication
             return result;
         }
 
-        public async Task<IdentityResult> RegisterAsync(UserCredentials credentials)
+        public async Task<IdentityResult> RegisterAsync(UserCredentialsDTO credentials)
         {
             var user = Activator.CreateInstance<EComUser>();
             user.UserName = credentials.Email;

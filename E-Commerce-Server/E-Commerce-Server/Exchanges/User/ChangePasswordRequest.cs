@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ECom.API.DTOs.UserDTOs
+namespace ECom.API.Exchanges.User
 {
-    public class ChangePasswordDTO
+    public class ChangePasswordRequest
     {
         [Required]
         [RegularExpression(Constants.ValidationConsts.PASSWORD_REGEX,

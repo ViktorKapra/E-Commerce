@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using ECom.API.DTOs.ProductDTOs;
+using ECom.API.Exchanges.Product;
+using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
-using ECom.BLogic.Templates;
-using ECom.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,11 +41,11 @@ namespace ECom.API.Controllers
         /// <param name="request">The updated profile information.</param>
         /// <response code="200"> List of products</response>
         [HttpGet("search")]
-        public async Task<ActionResult<List<ProductDTO>>> SearchProducts([FromQuery] ProductsSearchDTO request)
+        public async Task<ActionResult<List<ProductResponse>>> SearchProducts([FromQuery] ProductsSearchRequest request)
         {
-            var searchQuery = _mapper.Map<SearchQuery<Product>>(request);
-            List<Product> products = await productService.SearchAsync(searchQuery);
-            List<ProductDTO> productDTOs = products.Select(x => _mapper.Map<ProductDTO>(x)).ToList();
+            var searchDTO = _mapper.Map<ProductSearchDTO>(request);
+            List<ProductDTO> products = await productService.SearchAsync(searchDTO);
+            List<ProductResponse> productDTOs = products.Select(x => _mapper.Map<ProductResponse>(x)).ToList();
             return Ok(productDTOs);
         }
     }

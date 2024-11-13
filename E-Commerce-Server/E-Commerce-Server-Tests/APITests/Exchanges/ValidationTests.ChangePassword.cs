@@ -1,18 +1,18 @@
 ﻿using AutoFixture;
-using ECom.API.DTOs.UserDTOs;
+using ECom.API.Exchanges.User;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECom.Test.APITests.DTOs
+namespace ECom.Test.APITests.Exchanges
 {
     public partial class ModelValidationTests
     {
         [Fact]
-        public void ChangePasswordDTO_Validation_Null_Passwords()
+        public void ChangePasswordRequest_Validation_Null_Passwords()
         {
             //Arrange
             string newPassword = null;
             string oldPassword = null;
-            ChangePasswordDTO request = new ChangePasswordDTO();
+            ChangePasswordRequest request = new ChangePasswordRequest();
             var errors = new List<ValidationResult>();
             //Act
             request.NewPassword = newPassword;
@@ -22,11 +22,11 @@ namespace ECom.Test.APITests.DTOs
             Assert.Equal(2, errors.Count);
         }
         [Fact]
-        public void ChangePasswordDTO_Validation_Short_NewPassword()
+        public void ChangePasswordRequest_Validation_Short_NewPassword()
         {
             //Arrange
             var fixture = new Fixture();
-            ChangePasswordDTO request = new ChangePasswordDTO()
+            ChangePasswordRequest request = new ChangePasswordRequest()
             {
                 NewPassword = fixture.Create<string>().Substring(0, 5),
                 OldPassword = fixture.Create<string>()
@@ -42,11 +42,11 @@ namespace ECom.Test.APITests.DTOs
 
         [Theory]
         [MemberData(nameof(weakPasswords))]
-        public void ChangePasswordDTO_Validation_Weak_NewPassword(string newPassword)
+        public void ChangePasswordRequest_Validation_Weak_NewPassword(string newPassword)
         {
             //Arrange
             var fixture = new Fixture();
-            ChangePasswordDTO request = new ChangePasswordDTO()
+            ChangePasswordRequest request = new ChangePasswordRequest()
             {
                 NewPassword = newPassword,
                 OldPassword = fixture.Create<string>()
@@ -61,11 +61,11 @@ namespace ECom.Test.APITests.DTOs
 
         [Theory]
         [MemberData(nameof(strongPasswords))]
-        public void ChangePasswordDTO_Validation_Strong_NewPassword(string newPassword)
+        public void ChangePasswordRequest_Validation_Strong_NewPassword(string newPassword)
         {
             //Arrange
             var fixture = new Fixture();
-            ChangePasswordDTO request = new ChangePasswordDTO()
+            ChangePasswordRequest request = new ChangePasswordRequest()
             {
                 NewPassword = newPassword,
                 OldPassword = fixture.Create<string>()

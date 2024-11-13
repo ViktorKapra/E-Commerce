@@ -1,6 +1,8 @@
-﻿using ECom.BLogic.Services.Interfaces;
+﻿using AutoMapper;
+using ECom.API.Mapper;
+using ECom.BLogic.Services.DTOs;
+using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Services.Product;
-using ECom.BLogic.Templates;
 using ECom.Constants;
 using ECom.Data;
 using ECom.Data.Models;
@@ -11,6 +13,7 @@ namespace ECom.Test.BLogicTests
     public class ProductServiceTests
     {
         private ApplicationDbContext _context;
+        private readonly IMapper _mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
         private IProductService _productService;
 
         public ProductServiceTests()
@@ -21,7 +24,7 @@ namespace ECom.Test.BLogicTests
             _context = new ApplicationDbContext(options);
             if (_context.Products.Count() == 0)
             { LoadTestData(); }
-            _productService = new ProductService(_context);
+            _productService = new ProductService(_context, _mapper);
         }
 
         private void LoadTestData()
@@ -69,14 +72,14 @@ namespace ECom.Test.BLogicTests
             string[] expectedNames)
         {
             // Arrange
-            var searchQuery = new SearchQuery<Product>
+            var searchDTO = new ProductSearchDTO
             {
-                Expression = p => p.Platform == platform,
+                Platform = Enum.GetName(platform),
                 Limit = 10,
                 Offset = 0
             };
             // Act
-            var result = await _productService.SearchAsync(searchQuery);
+            var result = await _productService.SearchAsync(searchDTO);
             var resultsNames = result.Select(p => p.Name).ToList();
             // Assert
             Assert.Equal(expectedCount, result.Count);
@@ -92,14 +95,14 @@ namespace ECom.Test.BLogicTests
             string[] expectedNames)
         {
             // Arrange
-            var searchQuery = new SearchQuery<Product>
+            var searchDTO = new ProductSearchDTO
             {
-                Expression = p => p.Name.Contains(searcedName),
+                Name = searcedName,
                 Limit = 10,
                 Offset = 0
             };
             // Act
-            var result = await _productService.SearchAsync(searchQuery);
+            var result = await _productService.SearchAsync(searchDTO);
             var resultsNames = result.Select(p => p.Name).ToList();
             // Assert
             Assert.Equal(expectedCount, result.Count);
