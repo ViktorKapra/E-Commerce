@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-E_Commerce_Server-826fe2c7-9966-42c2-b85f-e6d46c5b3c13</UserSecretsId>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<NoWarn>1591</NoWarn>
     <RootNamespace>ECom.API</RootNamespace>
   </PropertyGroup>
 

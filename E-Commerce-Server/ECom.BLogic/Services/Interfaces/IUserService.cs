@@ -1,4 +1,4 @@
-﻿using ECom.Data.Account;
+﻿using ECom.BLogic.Services.DTOs;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
@@ -6,8 +6,8 @@ namespace ECom.BLogic.Services.Interfaces
 {
     public interface IUserService
     {
-        public Task<EComUser> GetProfileInfoAsync(ClaimsPrincipal userClaims);
-        public Task<IdentityResult> UpdateProfileInfoAsync(EComUser user);
-        public Task<IdentityResult> ChangePasswordAsync(EComUser user, string newPassword, string oldPassword);
+        public Task<UserDTO> GetProfileInfoAsync(ClaimsPrincipal userClaims);
+        public Task<IdentityResult> UpdateProfileInfoAsync(UserDTO userDTO, ClaimsPrincipal userClaims);
+        public Task<IdentityResult> ChangePasswordAsync(ClaimsPrincipal userClaims, string oldPassword, string newPassword);
     }
 }

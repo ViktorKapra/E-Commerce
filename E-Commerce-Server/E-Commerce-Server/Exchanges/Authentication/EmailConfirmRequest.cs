@@ -1,9 +1,9 @@
 ﻿using ECom.Constants;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECom.API.DTOs.AuthenticationDTO
+namespace ECom.API.Exchanges.Authentication
 {
-    public class EmailConfirmDTO
+    public class EmailConfirmRequest
     {
         [Required]
         [StringLength(320)]

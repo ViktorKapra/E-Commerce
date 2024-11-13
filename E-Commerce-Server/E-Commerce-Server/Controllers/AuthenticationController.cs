@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using ECom.API.DTO.AuthenticationDTO;
-using ECom.API.DTOs.AuthenticationDTO;
+using ECom.API.Exchanges.Authentication;
+using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
-using ECom.BLogic.Services.Models;
 using ECom.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -28,10 +27,10 @@ namespace ECom.API.Controllers
         }
 
         [HttpGet("emailConfirm")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] EmailConfirmDTO confirmDTO)
+        public async Task<IActionResult> ConfirmEmail([FromQuery] EmailConfirmRequest confirmRequest)
         {
             Log.Information("Confirmation is reached!");
-            EmailConfirmCredentials credentials = _mapper.Map<EmailConfirmCredentials>(confirmDTO);
+            EmailConfirmDTO credentials = _mapper.Map<EmailConfirmDTO>(confirmRequest);
             IdentityResult result = await _authenticationService.ConfirmEmailAsync(credentials);
             if (result.Succeeded)
             {
@@ -46,9 +45,9 @@ namespace ECom.API.Controllers
         }
 
         [HttpPost("signIn")]
-        public async Task<IActionResult> Login(LoginDTO request)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            UserCredentials user = _mapper.Map<UserCredentials>(request);
+            UserCredentialsDTO user = _mapper.Map<UserCredentialsDTO>(request);
             var result = await _authenticationService.LoginAsync(user);
             if (result.Succeeded)
             {
@@ -58,9 +57,9 @@ namespace ECom.API.Controllers
         }
 
         [HttpPost("signUp")]
-        public async Task<IActionResult> Register(RegisterDTO request)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
-            UserCredentials user = _mapper.Map<UserCredentials>(request);
+            UserCredentialsDTO user = _mapper.Map<UserCredentialsDTO>(request);
             var result = await _authenticationService.RegisterAsync(user);
             if (result.Succeeded)
             {

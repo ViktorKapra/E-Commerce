@@ -4,7 +4,9 @@ using ECom.Configuration.Extenstions;
 using ECom.Configuration.JSONformater;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 
 namespace ECom.API
 {
@@ -47,7 +49,19 @@ namespace ECom.API
 
             services.AddControllers();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                {
+                    c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "My API - V1",
+                        Version = "v1"
+                    });
+
+                    c.IncludeXmlComments(Assembly.GetExecutingAssembly());
+                }
+            });
 
             services.AddSingleton(new MapperConfiguration(mc =>
             {

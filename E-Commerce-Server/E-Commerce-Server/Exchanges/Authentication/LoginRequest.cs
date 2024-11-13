@@ -1,8 +1,8 @@
 ﻿using ECom.Constants;
 using System.ComponentModel.DataAnnotations;
-namespace ECom.API.DTO.AuthenticationDTO
+namespace ECom.API.Exchanges.Authentication
 {
-    public class LoginDTO
+    public class LoginRequest
     {
         [Required]
         [StringLength(320)]
