@@ -12,12 +12,12 @@ namespace ECom.API.Controllers
 
     public class ProductController : ControllerBase
     {
-        private readonly IProductService productService;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
 
         public ProductController(IProductService productService, IMapper mapper)
         {
-            this.productService = productService;
+            _productService = productService;
             _mapper = mapper;
         }
 
@@ -31,7 +31,7 @@ namespace ECom.API.Controllers
         public async Task<IActionResult> GetTopPlatforms()
         {
             var platformCount = 3;
-            var platforms = await productService.GetTopPlatformsAsync(platformCount);
+            var platforms = await _productService.GetTopPlatformsAsync(platformCount);
             return Ok(platforms.Select(x => x.ToString()).ToList());
         }
 
@@ -43,31 +43,31 @@ namespace ECom.API.Controllers
         /// <response code="200"> List of products</response>
         [AllowAnonymous]
         [HttpGet("search")]
-        public async Task<ActionResult<List<ProductExchange>>> SearchProducts([FromQuery] ProductsSearchRequest request)
+        public async Task<ActionResult<List<ProductResponse>>> SearchProducts([FromQuery] ProductsSearchRequest request)
         {
             var searchDTO = _mapper.Map<ProductSearchDTO>(request);
-            List<ProductDTO> products = await productService.SearchAsync(searchDTO);
-            List<ProductExchange> productDTOs = products.Select(x => _mapper.Map<ProductExchange>(x)).ToList();
+            List<ProductDTO> products = await _productService.SearchAsync(searchDTO);
+            List<ProductResponse> productDTOs = products.Select(x => _mapper.Map<ProductResponse>(x)).ToList();
             return Ok(productDTOs);
         }
 
         [AllowAnonymous]
         [HttpGet("id")]
-        public async Task<ActionResult<ProductExchange>> GetProduct([FromQuery] int id)
+        public async Task<ActionResult<ProductResponse>> GetProduct([FromQuery] int id)
         {
-            var product = await productService.GetProductAsync(id);
+            var product = await _productService.GetProductAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<ProductExchange>(product));
+            return Ok(_mapper.Map<ProductResponse>(product));
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("id")]
         public async Task<IActionResult> DeleteProduct([FromQuery] int id)
         {
-            bool deleteSecceded = await productService.DeleteProductAsync(id);
+            bool deleteSecceded = await _productService.DeleteProductAsync(id);
             if (!deleteSecceded)
             {
                 return NotFound();
@@ -77,10 +77,10 @@ namespace ECom.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateGame([FromBody] ProductExchange request)
+        public async Task<IActionResult> CreateGame([FromForm] ProductRequest request)
         {
             var productDTO = _mapper.Map<ProductDTO>(request);
-            var creationSucceded = await productService.CreateProductAsync(productDTO);
+            var creationSucceded = await _productService.CreateProductAsync(productDTO, request.Background, request.Logo);
             if (creationSucceded)
             {
                 return Created();
@@ -90,9 +90,17 @@ namespace ECom.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<IActionResult> UpdateGame([FromBody] ProductExchange request)
+        public async Task<IActionResult> UpdateGame([FromForm] int productID, ProductRequest request)
         {
-            return Ok("This is not implemented");
+            var requestSucceded = false;
+            var productDTO = _mapper.Map<ProductDTO>(request);
+            productDTO.Id = productID;
+            requestSucceded = await _productService.UpdateProductAsync(productDTO, request.Background, request.Logo);
+            if (!requestSucceded)
+            {
+                return BadRequest();
+            }
+            return Ok();
         }
     }
 }

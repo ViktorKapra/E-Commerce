@@ -1,6 +1,8 @@
 ﻿using ECom.BLogic.Services.Authentication;
 using ECom.BLogic.Services.EmailService;
 using ECom.BLogic.Services.EmailService.Settings;
+using ECom.BLogic.Services.Image;
+using ECom.BLogic.Services.Image.Settings;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Services.Product;
 using ECom.BLogic.Services.Profile;
@@ -40,12 +42,14 @@ namespace ECom.Configuration.Extenstions
             });
         public static IServiceCollection AddServerLogic(this IServiceCollection services, IConfiguration config)
         {
+            services.ConfigureAndValidate<CloudinarySettings>(config);
             services.ConfigureAndValidate<SmtpServerSettings>(config);
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddTransient<SmtpClient>();
+            services.AddTransient<ImageService>();
             return services;
         }
 
@@ -58,6 +62,7 @@ namespace ECom.Configuration.Extenstions
                        .AddInterceptors(serviceProvider.GetRequiredService<SoftDeleteInterceptor>()));
 
             services.AddHealthChecks().AddSqlServer(connectionString);
+
             return services;
         }
 

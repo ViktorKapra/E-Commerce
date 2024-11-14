@@ -7,7 +7,6 @@ using ECom.BLogic.Templates;
 using ECom.Constants;
 using ECom.Data.Account;
 using ECom.Data.Models;
-using ECom.Extensions;
 using Microsoft.IdentityModel.Tokens;
 namespace ECom.API.Mapper
 {
@@ -40,9 +39,15 @@ namespace ECom.API.Mapper
                         (!src.TotalRating.HasValue || x.TotalRating == src.TotalRating) &&
                         (!src.Price.HasValue || x.Price == src.Price)
                 });
+            CreateMap<ProductDTO, Product>()
+                .ForMember(dest => dest.Id, opt => opt.UseDestinationValue())
+                .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => Enum.Parse<DataEnums.Platform>(src.Platform!)))
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => Enum.Parse<DataEnums.Rating>(src.Rating!)));
             CreateMap<Product, ProductDTO>()
-                .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => src.Platform.GetPlatformString()));
-            CreateMap<ProductDTO, ProductExchange>().ReverseMap();
+                .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => Enum.GetName(src.Platform)))
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => Enum.GetName(src.Rating)));
+            CreateMap<ProductRequest, ProductDTO>();
+            CreateMap<ProductDTO, ProductResponse>();
         }
     }
 }
