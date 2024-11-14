@@ -2,7 +2,7 @@
 
 namespace ECom.API.Exchanges.Product
 {
-    public class ProductResponse
+    public class ProductExchange
     {
         public int Id { get; set; }
         /// <summary>
@@ -28,5 +28,10 @@ namespace ECom.API.Exchanges.Product
         /// Price of the game.
         /// </summary>
         public decimal Price { get; set; }
+        public string? Logo { get; set; }
+        public string? Background { get; set; }
+        public string Genre { get; set; }
+        public int Count { get; set; }
+        public String? Rating { get; set; }
     }
 }

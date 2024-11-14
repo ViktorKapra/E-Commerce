@@ -18,6 +18,35 @@ namespace ECom.BLogic.Services.Product
             _context = context;
             _mapper = mapper;
         }
+
+        private async Task<ECom.Data.Models.Product?> GetProductById(int id)
+        {
+            return await _context.Products.FindAsync(id);
+        }
+        public async Task<ProductDTO?> GetProductAsync(int id)
+        {
+            var product = await GetProductById(id);
+            var productDTO = product is not null ? _mapper.Map<ProductDTO>(product) : null;
+            return productDTO;
+        }
+        public async Task<bool> DeleteProductAsync(int id)
+        {
+            var product = await GetProductById(id);
+            if (product == null)
+            {
+                Log.Error("Product with id {id} not found", id);
+                return false;
+            }
+            // To manage images, if we need to delete them
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public Task<bool> CreateProductAsync(ProductDTO productDTO)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Platform>> GetTopPlatformsAsync(int count)
         {
             if (count < 1)

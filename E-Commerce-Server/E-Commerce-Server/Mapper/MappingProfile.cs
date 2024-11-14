@@ -42,7 +42,7 @@ namespace ECom.API.Mapper
                 });
             CreateMap<Product, ProductDTO>()
                 .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => src.Platform.GetPlatformString()));
-            CreateMap<ProductDTO, ProductResponse>().ReverseMap();
+            CreateMap<ProductDTO, ProductExchange>().ReverseMap();
         }
     }
 }
