@@ -106,7 +106,7 @@ namespace ECom.API.Controllers
         /// <remarks>Can be reached only by user with administration role </remarks>
         /// <param name="request"></param>
         /// /// <response code="201"></response>
-      //  [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateGame([FromForm] ProductRequest request)
         {
@@ -125,7 +125,7 @@ namespace ECom.API.Controllers
         /// </summary>
         /// <remarks>Can be reached only by user with administration role </remarks>
         /// /// <response code="200"></response>
-       // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateGame([FromForm] int productID, [FromForm] ProductRequest request)
         {
