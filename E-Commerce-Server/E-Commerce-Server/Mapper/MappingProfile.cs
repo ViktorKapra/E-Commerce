@@ -2,6 +2,7 @@
 using ECom.API.Exchanges.Authentication;
 using ECom.API.Exchanges.Product;
 using ECom.API.Exchanges.Profile;
+using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Templates;
 using ECom.Constants;
@@ -50,6 +51,9 @@ namespace ECom.API.Mapper
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => Enum.GetName(src.Rating)));
             CreateMap<ProductRequest, ProductDTO>();
             CreateMap<ProductDTO, ProductResponse>();
+            CreateMap<ProductRequest, ProductImagesDTO>()
+                .ForMember(dest => dest.Logo, opt => opt.MapFrom(src => src.Logo))
+                .ForMember(dest => dest.Background, opt => opt.MapFrom(src => src.Background));
         }
     }
 }

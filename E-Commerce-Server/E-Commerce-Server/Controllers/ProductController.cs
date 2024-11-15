@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECom.API.Exchanges.Product;
+using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -105,12 +106,13 @@ namespace ECom.API.Controllers
         /// <remarks>Can be reached only by user with administration role </remarks>
         /// <param name="request"></param>
         /// /// <response code="201"></response>
-        [Authorize(Roles = "Admin")]
+      //  [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateGame([FromForm] ProductRequest request)
         {
             var productDTO = _mapper.Map<ProductDTO>(request);
-            var creationSucceded = await _productService.CreateProductAsync(productDTO, request.Background, request.Logo);
+            var productImages = _mapper.Map<ProductImagesDTO>(request);
+            var creationSucceded = await _productService.CreateProductAsync(productDTO, productImages);
             if (creationSucceded)
             {
                 return Created();
@@ -123,14 +125,15 @@ namespace ECom.API.Controllers
         /// </summary>
         /// <remarks>Can be reached only by user with administration role </remarks>
         /// /// <response code="200"></response>
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateGame([FromForm] int productID, [FromForm] ProductRequest request)
         {
             var requestSucceded = false;
             var productDTO = _mapper.Map<ProductDTO>(request);
+            var productImages = _mapper.Map<ProductImagesDTO>(request);
             productDTO.Id = productID;
-            requestSucceded = await _productService.UpdateProductAsync(productDTO, request.Background, request.Logo);
+            requestSucceded = await _productService.UpdateProductAsync(productDTO, productImages);
             if (!requestSucceded)
             {
                 return BadRequest();

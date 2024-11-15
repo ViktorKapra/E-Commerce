@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Templates;
 using ECom.Constants;
 using ECom.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using static ECom.Constants.DataEnums;
@@ -23,14 +23,19 @@ namespace ECom.BLogic.Services.Product
             _imageService = imageService;
         }
         private async Task UploadImagesForProduct(ECom.Data.Models.Product product,
-            IFormFile? backgroundImage, IFormFile? logoImage)
+                                                  ProductImagesDTO prouctImagesDTO)
         {
             try
             {
-                product.Background = backgroundImage is null ? null :
-                                   await _imageService.UploadImageAsync(backgroundImage, $"background_{product.Id}", PathsConsts.PRODUCT_BACKGORUND_IMAGE_PATH);
-                product.Logo = logoImage is null ? null :
-                               await _imageService.UploadImageAsync(logoImage, $"logo_{product.Id}", PathsConsts.PRODUCT_LOGO_IMAGE_PATH);
+                product.Background = prouctImagesDTO.Background is null
+                                   ? null
+                                   : await _imageService.UploadImageAsync(prouctImagesDTO.Background,
+                                                                          $"background_{product.Id}",
+                                                                          PathsConsts.PRODUCT_BACKGORUND_IMAGE_PATH);
+                product.Logo = prouctImagesDTO.Logo is null ? null :
+                               await _imageService.UploadImageAsync(prouctImagesDTO.Logo,
+                                                                    $"logo_{product.Id}",
+                                                                    PathsConsts.PRODUCT_LOGO_IMAGE_PATH);
             }
             catch (Exception e) { Log.Error(e, "Error uploading images"); }
         }
@@ -52,7 +57,7 @@ namespace ECom.BLogic.Services.Product
 
         private async Task<ECom.Data.Models.Product?> GetProductById(int id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<ProductDTO?> GetProductAsync(int id)
@@ -75,7 +80,7 @@ namespace ECom.BLogic.Services.Product
             return true;
         }
 
-        public async Task<bool> CreateProductAsync(ProductDTO productDTO, IFormFile? backgroundImage, IFormFile? logoImage)
+        public async Task<bool> CreateProductAsync(ProductDTO productDTO, ProductImagesDTO productImagesDTO)
         {
             var product = _mapper.Map<ECom.Data.Models.Product>(productDTO);
 
@@ -90,25 +95,25 @@ namespace ECom.BLogic.Services.Product
                 return false;
             }
 
-            await UploadImagesForProduct(product, backgroundImage, logoImage);
+            await UploadImagesForProduct(product, productImagesDTO);
             await _context.SaveChangesAsync();
             Log.Information("Product with id {id} created", product.Id);
             return true;
         }
-        public async Task<bool> UpdateProductAsync(ProductDTO productDTO, IFormFile? backgroundImage, IFormFile? logoImage)
+        public async Task<bool> UpdateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO)
         {
             var product = await GetProductById(productDTO.Id);
             if (product is null)
             {
-                return await CreateProductAsync(productDTO, backgroundImage, logoImage);
+                return await CreateProductAsync(productDTO, prouctImagesDTO);
             }
 
             try
             {
-                _mapper.Map(productDTO, product);
+                _mapper.Map<ProductDTO, ECom.Data.Models.Product>(productDTO, product);
                 _context.Update(product);
                 await DeleteImagesForProduct(product);
-                await UploadImagesForProduct(product, backgroundImage, logoImage);
+                await UploadImagesForProduct(product, prouctImagesDTO);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)

@@ -7,6 +7,7 @@ namespace ECom.API.Exchanges.Product
     {
         [Required]
         public string Name { get; set; }
+
         /// <summary>
         /// The platform on which the game is available.
         ///</summary>
@@ -14,30 +15,38 @@ namespace ECom.API.Exchanges.Product
         ///<example>PC</example>
         [Required]
         public string Platform { get; set; }
+
         /// <summary>
         /// The date the game was created.
         /// </summary>
-        /// <example>2024-01-01</example>
+        /// <example>2024-01-01</example
         [Required]
         public DateOnly DateCreated { get; set; }
+
 
         [Required]
         [Range(1.0, 5.0)]
         public decimal TotalRating { get; set; }
+
         /// <summary>
         /// Price of the game.
         /// </summary>
         [Required]
         public decimal Price { get; set; }
+
         public IFormFile? Logo { get; set; }
+
         public IFormFile? Background { get; set; }
+
         [Required]
         //<summary>
         /// The genre of the game.
         /// </summary>
         public string Genre { get; set; }
+
         [Required]
         public int Count { get; set; } = DefaultValuesConsts.DEFAULT_PRODUCT_COUNT;
+
         /// <summary>
         /// The age rating.
         ///</summary>
