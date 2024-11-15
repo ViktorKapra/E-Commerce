@@ -6,6 +6,7 @@ using ECom.BLogic.Services.Product;
 using ECom.Constants;
 using ECom.Data;
 using ECom.Data.Models;
+using FakeItEasy;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECom.Test.BLogicTests
@@ -13,6 +14,7 @@ namespace ECom.Test.BLogicTests
     public class ProductServiceTests
     {
         private ApplicationDbContext _context;
+        private IImageService _imageService = A.Fake<IImageService>();
         private readonly IMapper _mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
         private IProductService _productService;
 
@@ -24,7 +26,7 @@ namespace ECom.Test.BLogicTests
             _context = new ApplicationDbContext(options);
             if (_context.Products.Count() == 0)
             { LoadTestData(); }
-            _productService = new ProductService(_context, _mapper);
+            _productService = new ProductService(_context, _mapper, _imageService);
         }
 
         private void LoadTestData()
@@ -32,22 +34,28 @@ namespace ECom.Test.BLogicTests
             var products = new List<Product>
                 {
                     new Product { Id = 1, Name = "Product 1", Platform = DataEnums.Platform.PC,
-                        DateCreated = new DateOnly(2023, 1, 25), Price = 25.5m, TotalRating = 3.2m},
+                        DateCreated = new DateOnly(2023, 1, 25), Price = 25.5m, TotalRating = 3.2m,
+                        Genre = "PRG"},
 
                     new Product { Id = 2, Name = "Product 2", Platform = DataEnums.Platform.PC,
-                        DateCreated = new DateOnly(2023, 4, 26), Price = 30.0m, TotalRating = 4.5m},
+                        DateCreated = new DateOnly(2023, 4, 26), Price = 30.0m, TotalRating = 4.5m,
+                        Genre = "Action"},
 
                     new Product { Id = 3, Name = "Product 3", Platform = DataEnums.Platform.PC,
-                        DateCreated = new DateOnly(2023, 1, 27), Price = 50.0m, TotalRating = 4.0m},
+                        DateCreated = new DateOnly(2023, 1, 27), Price = 50.0m, TotalRating = 4.0m,
+                        Genre = "Racing"},
 
                     new Product { Id = 4, Name = "Product 4", Platform = DataEnums.Platform.Console,
-                        DateCreated = new DateOnly(2023, 1, 28), Price = 20.0m, TotalRating = 3.8m},
+                        DateCreated = new DateOnly(2023, 1, 28), Price = 20.0m, TotalRating = 3.8m,
+                        Genre = "Logic"},
 
                     new Product { Id = 5, Name = "Product 5", Platform = DataEnums.Platform.Console,
-                        DateCreated = new DateOnly(2023, 1, 29), Price = 35.0m, TotalRating = 4.2m},
+                        DateCreated = new DateOnly(2023, 1, 29), Price = 35.0m, TotalRating = 4.2m,
+                        Genre = "Puzzle"},
 
                     new Product { Id = 6, Name = "Product 6", Platform = DataEnums.Platform.Mobile,
-                        DateCreated = new DateOnly(2020, 1, 27), Price = 10.0m, TotalRating = 1.0m},
+                        DateCreated = new DateOnly(2020, 1, 27), Price = 10.0m, TotalRating = 1.0m,
+                        Genre = "Logic"},
                 };
             _context.Products.AddRange(products);
             _context.SaveChanges();
@@ -112,6 +120,42 @@ namespace ECom.Test.BLogicTests
             }
         }
 
+        [Theory]
+        [InlineData(3)]
+        public async Task GetTaskById_ReturnsTaskWithCorrectId_IsTrue(int id)
+        {
+            // Act
+            var result = await _productService.GetProductAsync(id);
+            // Assert
+            Assert.Equal(id, result.Id);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        public async Task GetTaskById_WrongId_ReturnsNull_IsTtrue(int id)
+        {
+            // Act
+            var result = await _productService.GetProductAsync(id);
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public async Task DeletedProduct_IsNotShownAgain_IsTrue(int id)
+        {
+            // Arrange
+            var productCountBefore = _context.Products.Count();
+            var newProduct = A.Fake<Product>();
+            _context.Products.Add(newProduct);
+            // Act
+            var product = await _productService.DeleteProductAsync(newProduct.Id);
+            var productCountAfter = _context.Products.Count();
+            // Assert
+            Assert.Equal(productCountBefore, productCountAfter);
+
+
+        }
     }
 }
 

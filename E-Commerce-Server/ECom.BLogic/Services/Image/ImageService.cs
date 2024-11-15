@@ -1,13 +1,14 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using ECom.BLogic.Services.Image.Settings;
+using ECom.BLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace ECom.BLogic.Services.Image
 {
-    public class ImageService
+    public class ImageService : IImageService
     {
         private Cloudinary _cloudinary { get; set; }
         public ImageService(IOptions<CloudinarySettings> settings)
@@ -16,10 +17,6 @@ namespace ECom.BLogic.Services.Image
             _cloudinary.Api.Secure = settings.Value.IsSecure;
         }
 
-        public string GetImageURL(string publicId)
-        {
-            return _cloudinary.Api.UrlImgUp.BuildUrl(publicId);
-        }
         public async Task<string> UploadImageAsync(IFormFile image, string imageName, string folder = "")
         {
             var uploadResult = new ImageUploadResult();

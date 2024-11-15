@@ -37,7 +37,9 @@ namespace ECom.API.Mapper
                         (src.Platform.IsNullOrEmpty() || x.Platform == Enum.Parse<DataEnums.Platform>(src.Platform!)) &&
                         (!src.DateCreated.HasValue || x.DateCreated == src.DateCreated) &&
                         (!src.TotalRating.HasValue || x.TotalRating == src.TotalRating) &&
-                        (!src.Price.HasValue || x.Price == src.Price)
+                        (!src.Price.HasValue || x.Price == src.Price) &&
+                        (string.IsNullOrEmpty(src.Genre) || x.Genre == src.Genre) &&
+                        (string.IsNullOrEmpty(src.Rating) || x.Rating == Enum.Parse<DataEnums.Rating>(src.Rating!))
                 });
             CreateMap<ProductDTO, Product>()
                 .ForMember(dest => dest.Id, opt => opt.UseDestinationValue())

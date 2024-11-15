@@ -29,5 +29,13 @@ namespace ECom.API.Exchanges.Product
         /// Price of the searched game.
         /// </summary>
         public decimal? Price { get; set; }
+        /// <summary>
+        /// The genre of the game.
+        /// </summary>
+        public string? Genre { get; set; }
+        /// <summary>
+        /// The age rating of the game.
+        /// </summary>
+        public string? Rating { get; set; }
     }
 }

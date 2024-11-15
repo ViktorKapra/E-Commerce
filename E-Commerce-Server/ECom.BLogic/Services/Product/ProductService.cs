@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ECom.BLogic.Services.DTOs;
-using ECom.BLogic.Services.Image;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Templates;
 using ECom.Constants;
@@ -16,8 +15,8 @@ namespace ECom.BLogic.Services.Product
     {
         public readonly ApplicationDbContext _context;
         public readonly IMapper _mapper;
-        public readonly ImageService _imageService;
-        public ProductService(ApplicationDbContext context, IMapper mapper, ImageService imageService)
+        public readonly IImageService _imageService;
+        public ProductService(ApplicationDbContext context, IMapper mapper, IImageService imageService)
         {
             _context = context;
             _mapper = mapper;

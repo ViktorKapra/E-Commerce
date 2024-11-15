@@ -48,8 +48,8 @@ namespace ECom.Configuration.Extenstions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddTransient<IImageService, ImageService>();
             services.AddTransient<SmtpClient>();
-            services.AddTransient<ImageService>();
             return services;
         }
 

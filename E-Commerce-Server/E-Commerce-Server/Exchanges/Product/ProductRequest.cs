@@ -32,7 +32,11 @@ namespace ECom.API.Exchanges.Product
         public IFormFile? Logo { get; set; }
         public IFormFile? Background { get; set; }
         [Required]
+        //<summary>
+        /// The genre of the game.
+        /// </summary>
         public string Genre { get; set; }
+        [Required]
         public int Count { get; set; } = DefaultValuesConsts.DEFAULT_PRODUCT_COUNT;
         /// <summary>
         /// The age rating.

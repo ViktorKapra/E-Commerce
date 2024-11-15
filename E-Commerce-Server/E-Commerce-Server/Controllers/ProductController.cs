@@ -4,6 +4,7 @@ using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace ECom.API.Controllers
 {
@@ -50,11 +51,22 @@ namespace ECom.API.Controllers
             List<ProductResponse> productDTOs = products.Select(x => _mapper.Map<ProductResponse>(x)).ToList();
             return Ok(productDTOs);
         }
-
+        /// <summary>
+        /// Returns the found product based on the given id
+        /// </summary>
+        /// <remarks>Don't need authentication to be reached </remarks>
+        /// <param name="id">The id of the the product</param>
+        /// <response code="200"> List of products</response>
         [AllowAnonymous]
         [HttpGet("id")]
         public async Task<ActionResult<ProductResponse>> GetProduct([FromQuery] int id)
         {
+            if (id < 1)
+            {
+                var message = "Id must be greater than 0";
+                Log.Error(message);
+                return BadRequest();
+            }
             var product = await _productService.GetProductAsync(id);
             if (product == null)
             {
@@ -63,10 +75,22 @@ namespace ECom.API.Controllers
             return Ok(_mapper.Map<ProductResponse>(product));
         }
 
+        /// <summary>
+        /// Deletes the product based on the given id
+        /// </summary>
+        /// <remarks>Can be reached only by user with administration role </remarks>
+        /// <param name="id">The id of the the product</param>
+        /// <response code="204"></response>
         [Authorize(Roles = "Admin")]
         [HttpDelete("id")]
         public async Task<IActionResult> DeleteProduct([FromQuery] int id)
         {
+            if (id < 1)
+            {
+                var message = "Id must be greater than 0";
+                Log.Error(message);
+                return BadRequest();
+            }
             bool deleteSecceded = await _productService.DeleteProductAsync(id);
             if (!deleteSecceded)
             {
@@ -75,6 +99,12 @@ namespace ECom.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Creates a new product
+        /// </summary>
+        /// <remarks>Can be reached only by user with administration role </remarks>
+        /// <param name="request"></param>
+        /// /// <response code="201"></response>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateGame([FromForm] ProductRequest request)
@@ -88,9 +118,14 @@ namespace ECom.API.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Update existing product or create a new one
+        /// </summary>
+        /// <remarks>Can be reached only by user with administration role </remarks>
+        /// /// <response code="200"></response>
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public async Task<IActionResult> UpdateGame([FromForm] int productID, ProductRequest request)
+        public async Task<IActionResult> UpdateGame([FromForm] int productID, [FromForm] ProductRequest request)
         {
             var requestSucceded = false;
             var productDTO = _mapper.Map<ProductDTO>(request);
