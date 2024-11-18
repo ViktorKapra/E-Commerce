@@ -1,11 +1,14 @@
 ﻿using ECom.BLogic.Services.Authentication;
 using ECom.BLogic.Services.EmailService;
 using ECom.BLogic.Services.EmailService.Settings;
+using ECom.BLogic.Services.Image;
+using ECom.BLogic.Services.Image.Settings;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Services.Product;
 using ECom.BLogic.Services.Profile;
 using ECom.Data;
 using ECom.Data.Account;
+using ECom.Data.Interceptors;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,20 +42,27 @@ namespace ECom.Configuration.Extenstions
             });
         public static IServiceCollection AddServerLogic(this IServiceCollection services, IConfiguration config)
         {
+            services.ConfigureAndValidate<CloudinarySettings>(config);
             services.ConfigureAndValidate<SmtpServerSettings>(config);
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddTransient<IImageService, ImageService>();
             services.AddTransient<SmtpClient>();
             return services;
         }
 
         public static IServiceCollection AddDataConfigurations(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            services.AddSingleton<SoftDeleteInterceptor>();
+
+            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+                options.UseSqlServer(connectionString)
+                       .AddInterceptors(serviceProvider.GetRequiredService<SoftDeleteInterceptor>()));
+
             services.AddHealthChecks().AddSqlServer(connectionString);
+
             return services;
         }
 

@@ -33,6 +33,8 @@ namespace ECom.Data
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);
+            modelBuilder.Entity<Product>()
+                .HasQueryFilter(u => !u.IsDeleted);
 
             Seeder seeder = new Seeder(modelBuilder);
             seeder.SeedProducts();

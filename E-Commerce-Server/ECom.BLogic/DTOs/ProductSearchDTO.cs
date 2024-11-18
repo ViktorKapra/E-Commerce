@@ -13,6 +13,8 @@ namespace ECom.BLogic.Services.DTOs
         public decimal? TotalRating { get; set; }
 
         public decimal? Price { get; set; }
+        public string? Genre { get; set; }
+        public string? Rating { get; set; }
 
         public int Limit { get; set; }
         public int Offset { get; set; }
