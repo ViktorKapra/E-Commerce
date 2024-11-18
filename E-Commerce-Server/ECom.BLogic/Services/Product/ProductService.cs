@@ -4,6 +4,7 @@ using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Templates;
 using ECom.Constants;
+using ECom.Constants.Exceptions;
 using ECom.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -25,62 +26,56 @@ namespace ECom.BLogic.Services.Product
         private async Task UploadImagesForProduct(ECom.Data.Models.Product product,
                                                   ProductImagesDTO prouctImagesDTO)
         {
-            try
-            {
-                product.Background = prouctImagesDTO.Background is null
-                                   ? null
-                                   : await _imageService.UploadImageAsync(prouctImagesDTO.Background,
-                                                                          $"background_{product.Id}",
-                                                                          PathsConsts.PRODUCT_BACKGORUND_IMAGE_PATH);
-                product.Logo = prouctImagesDTO.Logo is null ? null :
-                               await _imageService.UploadImageAsync(prouctImagesDTO.Logo,
-                                                                    $"logo_{product.Id}",
-                                                                    PathsConsts.PRODUCT_LOGO_IMAGE_PATH);
-            }
-            catch (Exception e) { Log.Error(e, "Error uploading images"); }
+
+            product.Background = prouctImagesDTO.Background is null
+                               ? null
+                               : await _imageService.UploadImageAsync(prouctImagesDTO.Background,
+                                                                      $"background_{product.Id}",
+                                                                      PathsConsts.PRODUCT_BACKGORUND_IMAGE_PATH);
+            product.Logo = prouctImagesDTO.Logo is null ? null :
+                           await _imageService.UploadImageAsync(prouctImagesDTO.Logo,
+                                                                $"logo_{product.Id}",
+                                                                PathsConsts.PRODUCT_LOGO_IMAGE_PATH);
+
         }
         private async Task DeleteImagesForProduct(ECom.Data.Models.Product product)
         {
-            try
+            if (product.Background is not null)
             {
-                if (product.Background is not null)
-                {
-                    await _imageService.DeleteImageAsync(product.Background);
-                }
-                if (product.Logo is not null)
-                {
-                    await _imageService.DeleteImageAsync(product.Logo);
-                }
+                await _imageService.DeleteImageAsync(product.Background);
             }
-            catch (Exception e) { Log.Error(e, "Error deleting images"); }
+            if (product.Logo is not null)
+            {
+                await _imageService.DeleteImageAsync(product.Logo);
+            }
         }
 
-        private async Task<ECom.Data.Models.Product?> GetProductById(int id)
+        private async Task<ECom.Data.Models.Product> GetProductById(int id)
         {
-            return await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _context.Products.FirstOrDefaultAsync(x => x.Id == id);
+            if (result is null)
+            {
+                var message = $"Product with id {id} is not found";
+                Log.Error(message);
+                throw new NonExistnantException(message);
+            }
+            return result;
         }
 
-        public async Task<ProductDTO?> GetProductAsync(int id)
+        public async Task<ProductDTO> GetProductAsync(int id)
         {
             var product = await GetProductById(id);
-            var productDTO = product is not null ? _mapper.Map<ProductDTO>(product) : null;
-            return productDTO;
+            return _mapper.Map<ProductDTO>(product);
         }
 
-        public async Task<bool> DeleteProductAsync(int id)
+        public async Task DeleteProductAsync(int id)
         {
             var product = await GetProductById(id);
-            if (product == null)
-            {
-                Log.Error("Product with id {id} not found", id);
-                return false;
-            }
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
-            return true;
         }
 
-        public async Task<bool> CreateProductAsync(ProductDTO productDTO, ProductImagesDTO productImagesDTO)
+        public async Task CreateProductAsync(ProductDTO productDTO, ProductImagesDTO productImagesDTO)
         {
             var product = _mapper.Map<ECom.Data.Models.Product>(productDTO);
 
@@ -91,39 +86,38 @@ namespace ECom.BLogic.Services.Product
             }
             catch (Exception e)
             {
-                Log.Error(e, "Error creating product");
-                return false;
+                throw new InvalidCreationException(e.Message);
             }
 
             await UploadImagesForProduct(product, productImagesDTO);
             await _context.SaveChangesAsync();
             Log.Information("Product with id {id} created", product.Id);
-            return true;
         }
-        public async Task<bool> UpdateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO)
+
+        public async Task UpdateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO)
         {
-            var product = await GetProductById(productDTO.Id);
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDTO.Id);
             if (product is null)
             {
-                return await CreateProductAsync(productDTO, prouctImagesDTO);
+                await CreateProductAsync(productDTO, prouctImagesDTO);
+                return;
             }
 
             try
             {
                 _mapper.Map<ProductDTO, ECom.Data.Models.Product>(productDTO, product);
                 _context.Update(product);
-                await DeleteImagesForProduct(product);
-                await UploadImagesForProduct(product, prouctImagesDTO);
-                await _context.SaveChangesAsync();
             }
             catch (Exception e)
             {
-                Log.Error(e, "Error updating product");
-                return false;
+                throw new ProductUpdateFailedException(e.Message);
             }
+            await DeleteImagesForProduct(product);
+            await UploadImagesForProduct(product, prouctImagesDTO);
+            await _context.SaveChangesAsync();
             Log.Information("Product with id {id} updated", product.Id);
-            return true;
         }
+
         public async Task<List<ProductDTO>> SearchAsync(ProductSearchDTO searchDTO)
         {
             var query = _mapper.Map<SearchQuery<ECom.Data.Models.Product>>(searchDTO);
@@ -142,8 +136,7 @@ namespace ECom.BLogic.Services.Product
             if (count < 1)
             {
                 var message = "Count must be greater than 0";
-                Log.Error(message);
-                throw new ArgumentException(message);
+                throw new InvalidArgumentException(message);
             }
             return await _context.Products
                         .GroupBy(p => p.Platform)

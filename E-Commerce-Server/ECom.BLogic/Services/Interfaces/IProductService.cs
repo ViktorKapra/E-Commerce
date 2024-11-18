@@ -8,10 +8,10 @@ namespace ECom.BLogic.Services.Interfaces
     {
         public Task<List<Platform>> GetTopPlatformsAsync(int count);
         public Task<List<ProductDTO>> SearchAsync(ProductSearchDTO searchQuery);
-        public Task<ProductDTO?> GetProductAsync(int id);
-        public Task<bool> DeleteProductAsync(int id);
-        public Task<bool> CreateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO);
-        public Task<bool> UpdateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO);
+        public Task<ProductDTO> GetProductAsync(int id);
+        public Task DeleteProductAsync(int id);
+        public Task CreateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO);
+        public Task UpdateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO);
 
     }
 }

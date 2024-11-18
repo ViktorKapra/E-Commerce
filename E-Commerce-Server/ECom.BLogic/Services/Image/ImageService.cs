@@ -2,6 +2,7 @@
 using CloudinaryDotNet.Actions;
 using ECom.BLogic.Services.Image.Settings;
 using ECom.BLogic.Services.Interfaces;
+using ECom.Constants.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -33,8 +34,7 @@ namespace ECom.BLogic.Services.Image
             }
             if (uploadResult.Error is not null)
             {
-                Log.Error("Error uploading image: {error}", uploadResult.Error.Message);
-                throw new Exception(uploadResult.Error.Message);
+                throw new UploadImageException(uploadResult.Error.Message);
             }
 
             Log.Information("Image uploaded successfully");
@@ -47,8 +47,7 @@ namespace ECom.BLogic.Services.Image
             var result = await _cloudinary.DestroyAsync(deleteParams);
             if (result.Error is not null)
             {
-                Log.Error("Error deleting image: {error}", result.Error.Message);
-                throw new Exception(result.Error.Message);
+                throw new DeleteImageException(result.Error.Message);
             }
             Log.Information("Image deleted successfully");
         }

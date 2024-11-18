@@ -5,7 +5,6 @@ using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace ECom.API.Controllers
 {
@@ -62,17 +61,7 @@ namespace ECom.API.Controllers
         [HttpGet("id")]
         public async Task<ActionResult<ProductResponse>> GetProduct([FromQuery] int id)
         {
-            if (id < 1)
-            {
-                var message = "Id must be greater than 0";
-                Log.Error(message);
-                return BadRequest();
-            }
             var product = await _productService.GetProductAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
             return Ok(_mapper.Map<ProductResponse>(product));
         }
 
@@ -86,17 +75,7 @@ namespace ECom.API.Controllers
         [HttpDelete("id")]
         public async Task<IActionResult> DeleteProduct([FromQuery] int id)
         {
-            if (id < 1)
-            {
-                var message = "Id must be greater than 0";
-                Log.Error(message);
-                return BadRequest();
-            }
-            bool deleteSecceded = await _productService.DeleteProductAsync(id);
-            if (!deleteSecceded)
-            {
-                return NotFound();
-            }
+            await _productService.DeleteProductAsync(id);
             return NoContent();
         }
 
@@ -112,12 +91,8 @@ namespace ECom.API.Controllers
         {
             var productDTO = _mapper.Map<ProductDTO>(request);
             var productImages = _mapper.Map<ProductImagesDTO>(request);
-            var creationSucceded = await _productService.CreateProductAsync(productDTO, productImages);
-            if (creationSucceded)
-            {
-                return Created();
-            }
-            return BadRequest();
+            await _productService.CreateProductAsync(productDTO, productImages);
+            return Created();
         }
 
         /// <summary>
@@ -129,15 +104,10 @@ namespace ECom.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateGame([FromForm] int productID, [FromForm] ProductRequest request)
         {
-            var requestSucceded = false;
             var productDTO = _mapper.Map<ProductDTO>(request);
             var productImages = _mapper.Map<ProductImagesDTO>(request);
             productDTO.Id = productID;
-            requestSucceded = await _productService.UpdateProductAsync(productDTO, productImages);
-            if (!requestSucceded)
-            {
-                return BadRequest();
-            }
+            await _productService.UpdateProductAsync(productDTO, productImages);
             return Ok();
         }
     }

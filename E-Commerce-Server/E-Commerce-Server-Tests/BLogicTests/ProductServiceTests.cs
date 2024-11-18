@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AutoFixture;
+using AutoMapper;
 using ECom.API.Mapper;
 using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.DTOs;
@@ -133,24 +134,17 @@ namespace ECom.Test.BLogicTests
             Assert.Equal(id, result.Id);
         }
 
-        [Theory]
-        [InlineData(0)]
-        public async Task GetTaskById_WrongId_ReturnsNull_IsTtrue(int id)
-        {
-            // Act
-            var result = await _productService.GetProductAsync(id);
-            // Assert
-            Assert.Null(result);
-        }
-
-        [Theory]
-        [InlineData(1)]
-        public async Task DeletedProduct_IsNotShownAgain_IsTrue(int id)
+        [Fact]
+        public async Task DeletedProduct_IsNotShownAgain_IsTrue()
         {
             // Arrange
+            var fixture = new Fixture();
             var productCountBefore = _context.Products.Count();
             var newProduct = A.Fake<Product>();
+            newProduct.Name = fixture.Create<string>();
+            newProduct.Genre = fixture.Create<string>();
             _context.Products.Add(newProduct);
+            _context.SaveChanges();
             // Act
             var product = await _productService.DeleteProductAsync(newProduct.Id);
             var productCountAfter = _context.Products.Count();
@@ -171,8 +165,9 @@ namespace ECom.Test.BLogicTests
             var productDTO = _mapper.Map<ProductDTO>(newProduct);
             productDTO.Name = "Updated Name";
             productDTO.Genre = "Updated Genre";
+            var productImagesDTO = A.Fake<ProductImagesDTO>();
             // Act
-            var result = await _productService.UpdateProductAsync(productDTO, null);
+            var result = await _productService.UpdateProductAsync(productDTO, productImagesDTO);
             var updatedProduct = await _productService.GetProductAsync(newProduct.Id);
             // Assert
             Assert.True(result);
