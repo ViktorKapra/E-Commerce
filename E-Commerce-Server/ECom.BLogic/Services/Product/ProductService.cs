@@ -17,11 +17,13 @@ namespace ECom.BLogic.Services.Product
         public readonly ApplicationDbContext _context;
         public readonly IMapper _mapper;
         public readonly IImageService _imageService;
-        public ProductService(ApplicationDbContext context, IMapper mapper, IImageService imageService)
+        public readonly IUserService _userService;
+        public ProductService(ApplicationDbContext context, IMapper mapper, IImageService imageService, IUserService userService)
         {
             _context = context;
             _mapper = mapper;
             _imageService = imageService;
+            _userService = userService;
         }
         private async Task UploadImagesForProduct(ECom.Data.Models.Product product,
                                                   ProductImagesDTO prouctImagesDTO)
@@ -32,8 +34,9 @@ namespace ECom.BLogic.Services.Product
                                : await _imageService.UploadImageAsync(prouctImagesDTO.Background,
                                                                       $"background_{product.Id}",
                                                                       PathsConsts.PRODUCT_BACKGORUND_IMAGE_PATH);
-            product.Logo = prouctImagesDTO.Logo is null ? null :
-                           await _imageService.UploadImageAsync(prouctImagesDTO.Logo,
+            product.Logo = prouctImagesDTO.Logo is null
+                         ? null
+                         : await _imageService.UploadImageAsync(prouctImagesDTO.Logo,
                                                                 $"logo_{product.Id}",
                                                                 PathsConsts.PRODUCT_LOGO_IMAGE_PATH);
 
@@ -120,7 +123,7 @@ namespace ECom.BLogic.Services.Product
 
         public async Task<List<ProductDTO>> SearchAsync(ProductSearchDTO searchDTO)
         {
-            var query = _mapper.Map<SearchQuery<ECom.Data.Models.Product>>(searchDTO);
+            var query = _mapper.Map<Query<ECom.Data.Models.Product>>(searchDTO);
 
             var entities = await _context.Products
                 .Where(query.Expression)
@@ -145,6 +148,72 @@ namespace ECom.BLogic.Services.Product
                         .Select(g => g.Key)
                         .ToListAsync();
         }
+        private async Task AdjustProductTotalRating(int productId)
+        {
+            var product = await GetProductById(productId);
+            var ratings = await _context.ProductRatings.Where(x => x.ProductId == product.Id)
+                                                       .Select(x => x.Rating).ToListAsync();
+            product.TotalRating = ratings.Count == 0
+                                ? DefaultValuesConsts.DEFAULT_RATING
+                                : (decimal)ratings.Average();
+            await _context.SaveChangesAsync();
+        }
 
+        public async Task<ProductRatingDTO> RateProductAsync(ProductRatingDTO ratingDTO)
+        {
+            var rating = _mapper.Map<ECom.Data.Models.ProductRating>(ratingDTO);
+            rating.Product = await GetProductById(ratingDTO.ProductId);
+            rating.User = await _userService.GetUserAsync(ratingDTO.UserClaim);
+            try
+            {
+                await _context.ProductRatings.AddAsync(rating);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new InvalidCreationException($"Rating for game '{rating.Product.Name}' is already created.");
+            }
+            await AdjustProductTotalRating(rating.ProductId);
+            return ratingDTO;
+        }
+
+        public async Task DeleteRatingAsync(ProductRatingDTO ratingDTO)
+        {
+            var product = await GetProductById(ratingDTO.ProductId);
+            var user = await _userService.GetUserAsync(ratingDTO.UserClaim);
+            var rating = await _context.ProductRatings.FirstOrDefaultAsync(x => x.UserId == user.Id
+                                                                      && x.ProductId == product.Id);
+            if (rating is null)
+            {
+                throw new NonExistnantException($"There aren't any rating records for the game '{product.Name}' ");
+            }
+            _context.ProductRatings.Remove(rating);
+            await _context.SaveChangesAsync();
+            await AdjustProductTotalRating(product.Id);
+        }
+
+        public async Task<List<ProductDTO>> FilterAsync(ProductFilterDTO filterDTO)
+        {
+            var query = _mapper.Map<FilterQuery<ECom.Data.Models.Product>>(filterDTO);
+
+            var entities = _context.Products
+                .Where(query.Expression);
+
+            var keySelector = (Data.Models.Product x) => x.GetType().GetProperty(query.OrderPropertyName);
+
+            if (query.OrderType == BLConsts.ORDER_TYPE_ASC)
+            {
+                entities.OrderBy(keySelector);
+            }
+            else
+            {
+                entities.OrderByDescending(keySelector);
+            }
+
+            await entities.ToListAsync();
+
+            var productDTOs = entities.Select(x => _mapper.Map<ProductDTO>(x)).ToList();
+            return productDTOs;
+        }
     }
 }

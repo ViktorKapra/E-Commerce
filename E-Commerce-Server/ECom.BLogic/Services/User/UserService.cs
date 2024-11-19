@@ -4,7 +4,10 @@ using ECom.BLogic.Services.Interfaces;
 using ECom.Data.Account;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
+
+[assembly: InternalsVisibleTo("ECom.Test")]
 
 namespace ECom.BLogic.Services.Profile
 {
@@ -21,7 +24,8 @@ namespace ECom.BLogic.Services.Profile
             _userManager = userManager;
             _mapper = mapper;
         }
-        private async Task<EComUser> GetUserAsync(ClaimsPrincipal userClaims)
+
+        async Task<EComUser> IUserService.GetUserAsync(ClaimsPrincipal userClaims)
         {
             var result = await _userManager.GetUserAsync(userClaims);
             if (result == null)
@@ -31,22 +35,26 @@ namespace ECom.BLogic.Services.Profile
             }
             return result;
         }
+
         public async Task<UserDTO> GetProfileInfoAsync(ClaimsPrincipal userClaims)
         {
             var user = await _userManager.GetUserAsync(userClaims);
             var userDTO = _mapper.Map<UserDTO>(user);
             return userDTO;
         }
+
         public async Task<IdentityResult> UpdateProfileInfoAsync(UserDTO userDTO, ClaimsPrincipal userClaims)
         {
             var user = await _userManager.GetUserAsync(userClaims);
             _mapper.Map(userDTO, user);
             return await _userManager.UpdateAsync(user!);
         }
+
         public async Task<IdentityResult> ChangePasswordAsync(ClaimsPrincipal userClaims, string oldPassword, string newPassword)
         {
             EComUser user = await _userManager.GetUserAsync(userClaims);
             return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
         }
+
     }
 }

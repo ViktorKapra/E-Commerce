@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ECom.API.Filters;
 using ECom.API.Mapper;
 using ECom.Configuration.Extenstions;
 using ECom.Configuration.JSONformater;
@@ -48,7 +49,7 @@ namespace ECom.API
 
             services.AddServerLogic(Configuration);
 
-            services.AddControllers();
+            services.AddScoped<ValidationProductFilterAttribute>();
 
             services.AddSwaggerGen(c =>
             {

@@ -1,9 +1,8 @@
 ﻿using ECom.Data.Account;
-using ECom.Data.Interfaces;
 
 namespace ECom.Data.Models
 {
-    public class ProductRating : ISoftDeletable
+    public class ProductRating
     {
 
         public int ProductId { get; set; }
@@ -11,6 +10,5 @@ namespace ECom.Data.Models
         public int Rating { get; set; }
         public Product Product { get; set; }
         public EComUser User { get; set; }
-        public bool IsDeleted { get; set; } = false;
     }
 }

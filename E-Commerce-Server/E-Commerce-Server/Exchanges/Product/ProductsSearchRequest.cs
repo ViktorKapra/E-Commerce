@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ECom.API.Exchanges.Product
 {
-    public class ProductsSearchRequest : SearchRequest
+    public class ProductsSearchRequest : FilterRequest
     {
 
         /// <summary>

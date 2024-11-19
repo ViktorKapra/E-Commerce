@@ -24,10 +24,6 @@ namespace ECom.API.Exchanges.Product
         public DateOnly DateCreated { get; set; }
 
 
-        [Required]
-        [Range(1.0, 5.0)]
-        public decimal TotalRating { get; set; }
-
         /// <summary>
         /// Price of the game.
         /// </summary>

@@ -4,6 +4,7 @@ using ECom.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECom.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241118140817_ProductRatings_Table")]
+    partial class ProductRatings_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,7 +147,7 @@ namespace ECom.Data.Migrations
 
                     b.Property<string>("Genre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -167,17 +170,13 @@ namespace ECom.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalRating")
-                        .ValueGeneratedOnAdd()
                         .HasPrecision(2, 1)
-                        .HasColumnType("decimal(2,1)")
-                        .HasDefaultValue(0m);
+                        .HasColumnType("decimal(2,1)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DateCreated")
                         .IsDescending();
-
-                    b.HasIndex("Genre");
 
                     b.HasIndex("Name");
 
