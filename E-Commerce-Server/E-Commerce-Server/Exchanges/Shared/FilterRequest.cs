@@ -5,7 +5,7 @@ namespace ECom.API.Exchanges.Templates
     /// <summary>
     /// Represents a search query with limit and offset parameters.
     /// </summary>
-    public class SearchRequest
+    public class FilterRequest
     {
         /// <summary>
         /// Gets or sets the maximum number of items to retrieve.

@@ -12,6 +12,8 @@ namespace ECom.BLogic.Services.Interfaces
         public Task DeleteProductAsync(int id);
         public Task CreateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO);
         public Task UpdateProductAsync(ProductDTO productDTO, ProductImagesDTO prouctImagesDTO);
-
+        public Task<ProductRatingDTO> RateProductAsync(ProductRatingDTO ratingDTO);
+        Task DeleteRatingAsync(ProductRatingDTO ratingDTO);
+        Task<List<ProductDTO>> FilterAsync(ProductFilterDTO filterDTO);
     }
 }

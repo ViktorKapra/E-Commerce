@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECom.API.Exchanges.Product;
+using ECom.API.Filters;
 using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
@@ -14,12 +15,14 @@ namespace ECom.API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductService productService, IMapper mapper)
+        public ProductController(IProductService productService, IMapper mapper, IUserService userService)
         {
             _productService = productService;
             _mapper = mapper;
+            _userService = userService;
         }
 
         /// <summary>
@@ -99,7 +102,7 @@ namespace ECom.API.Controllers
         /// Update existing product or create a new one
         /// </summary>
         /// <remarks>Can be reached only by user with administration role </remarks>
-        /// /// <response code="200"></response>
+        /// <response code="200"></response>
         [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateGame([FromForm] int productID, [FromForm] ProductRequest request)
@@ -109,6 +112,50 @@ namespace ECom.API.Controllers
             productDTO.Id = productID;
             await _productService.UpdateProductAsync(productDTO, productImages);
             return Ok();
+        }
+
+        /// <summary>
+        /// Creates a new rating for the product
+        /// </summary>
+        /// <remarks> Needs authentication. Reflects on Total Rating of the product</remarks>
+        /// <response code="200"> Returns the created rating</response>
+        [Authorize]
+        [HttpPost("rating")]
+        public async Task<IActionResult> RateProduct([FromBody] ProductRatingExchange request)
+        {
+            var ratingDTO = _mapper.Map<ProductRatingDTO>(request);
+            ratingDTO.UserClaim = HttpContext.User;
+            var response = await _productService.RateProductAsync(ratingDTO);
+            return Ok(_mapper.Map<ProductRatingExchange>(response));
+        }
+
+        ///<summary>
+        /// Deletes the rating for the product
+        ///</summary>
+        /// /// <response code="204"></response>
+        [Authorize]
+        [HttpDelete("rating")]
+        public async Task<IActionResult> DeleteRating([FromQuery] int productID)
+        {
+            var ratingDTO = new ProductRatingDTO { ProductId = productID, UserClaim = HttpContext.User };
+            await _productService.DeleteRatingAsync(ratingDTO);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Returns the found products based on the filter query
+        /// </summary>
+        /// <remarks>Don't need authentication to be reached </remarks>
+        /// <param name="request"></param>
+        /// <response code="200"> List of products</response>
+        [ServiceFilter(typeof(ValidationProductFilterAttribute))]
+        [HttpGet("list")]
+        public async Task<IActionResult> FilterProducts([FromQuery] ProductFilterRequest request)
+        {
+            var filterDTO = _mapper.Map<ProductFilterDTO>(request);
+            List<ProductDTO> products = await _productService.FilterAsync(filterDTO);
+            List<ProductResponse> productDTOs = products.Select(x => _mapper.Map<ProductResponse>(x)).ToList();
+            return Ok(productDTOs);
         }
     }
 }

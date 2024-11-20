@@ -58,8 +58,10 @@ namespace ECom.Configuration.Extenstions
             services.AddSingleton<SoftDeleteInterceptor>();
 
             services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
-                options.UseSqlServer(connectionString)
-                       .AddInterceptors(serviceProvider.GetRequiredService<SoftDeleteInterceptor>()));
+                {
+                    options.UseSqlServer(connectionString)
+                       .AddInterceptors(serviceProvider.GetRequiredService<SoftDeleteInterceptor>());
+                });
 
             services.AddHealthChecks().AddSqlServer(connectionString);
 

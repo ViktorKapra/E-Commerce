@@ -17,5 +17,6 @@ namespace ECom.Data.Models
         public int Count { get; set; }
         public DataEnums.Rating Rating { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public ICollection<ProductRating> Ratings { get; set; }
     }
 }

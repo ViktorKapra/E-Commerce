@@ -5,12 +5,16 @@ using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Services.Product;
+using ECom.BLogic.Services.Profile;
 using ECom.Constants;
 using ECom.Data;
+using ECom.Data.Account;
 using ECom.Data.Models;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 using System.Linq.Expressions;
 
 namespace ECom.Test.BLogicTests
@@ -21,6 +25,9 @@ namespace ECom.Test.BLogicTests
         private IImageService _imageService = A.Fake<IImageService>();
         private readonly IMapper _mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
         private IProductService _productService;
+        private IUserService _userService = new UserService(A.Fake<SignInManager<EComUser>>(),
+                                                            A.Fake<UserManager<EComUser>>(),
+                                                            A.Fake<IMapper>());
 
         public ProductServiceTests()
         {
@@ -30,7 +37,7 @@ namespace ECom.Test.BLogicTests
             _context = new ApplicationDbContext(options);
             if (_context.Products.Count() == 0)
             { LoadTestData(); }
-            _productService = new ProductService(_context, _mapper, _imageService);
+            _productService = new ProductService(_context, _mapper, _imageService, _userService);
         }
 
         private void LoadTestData()
@@ -146,7 +153,7 @@ namespace ECom.Test.BLogicTests
             _context.Products.Add(newProduct);
             _context.SaveChanges();
             // Act
-            var product = await _productService.DeleteProductAsync(newProduct.Id);
+            await _productService.DeleteProductAsync(newProduct.Id);
             var productCountAfter = _context.Products.Count();
             // Assert
             Assert.Equal(productCountBefore, productCountAfter);
@@ -167,10 +174,9 @@ namespace ECom.Test.BLogicTests
             productDTO.Genre = "Updated Genre";
             var productImagesDTO = A.Fake<ProductImagesDTO>();
             // Act
-            var result = await _productService.UpdateProductAsync(productDTO, productImagesDTO);
+            await _productService.UpdateProductAsync(productDTO, productImagesDTO);
             var updatedProduct = await _productService.GetProductAsync(newProduct.Id);
             // Assert
-            Assert.True(result);
             Assert.Equal(productDTO.Name, updatedProduct.Name);
             Assert.Equal(productDTO.Genre, updatedProduct.Genre);
         }
@@ -194,10 +200,9 @@ namespace ECom.Test.BLogicTests
             productDTO.Genre = specialGenre;
             var productImagesDTO = A.Fake<ProductImagesDTO>();
             // Act
-            var result = await _productService.CreateProductAsync(productDTO, productImagesDTO);
+            await _productService.CreateProductAsync(productDTO, productImagesDTO);
             var newProduct = await _context.Products.FirstOrDefaultAsync(condition);
             // Assert
-            Assert.True(result);
             Assert.Equal(productDTO.Name, newProduct.Name);
             Assert.Equal(productDTO.Genre, newProduct.Genre);
         }
@@ -226,15 +231,73 @@ namespace ECom.Test.BLogicTests
                 Background = A.Fake<FormFile>()
             };
             // Act
-            var result = await _productService.UpdateProductAsync(productDTO, imageDTO);
+            await _productService.UpdateProductAsync(productDTO, imageDTO);
             var updatedProduct = await _productService.GetProductAsync(newProduct.Id);
             // Assert
-            Assert.True(result);
+
             A.CallTo(() => _imageService.DeleteImageAsync(logo)).MustHaveHappenedOnceExactly();
             A.CallTo(() => _imageService.DeleteImageAsync(background)).MustHaveHappenedOnceExactly();
             A.CallTo(() => _imageService.UploadImageAsync(imageDTO.Logo, A<string>._, A<string>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => _imageService.UploadImageAsync(imageDTO.Background, A<string>._, A<string>._)).MustHaveHappenedOnceExactly();
         }
+
+        [Fact]
+        public async Task FilterAsync_FilterByGenre_ReturnsFilteredProducts()
+        {
+            // Arrange
+            var genre = "Action";
+            var filterDTO = new ProductFilterDTO
+            {
+                Genre = genre
+            };
+
+            // Act
+            var result = await _productService.FilterAsync(filterDTO);
+
+            // Assert
+            Assert.All(result, p => Assert.Equal(genre, p.Genre));
+        }
+
+        [Fact]
+        public async Task FilterAsync_FilterByAgeRating_ReturnsFilteredProducts()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var agerRating = fixture.Create<DataEnums.Rating>();
+            var filterDTO = new ProductFilterDTO
+            {
+                AgeRating = Enum.GetName(agerRating)
+            };
+
+            // Act
+            var result = await _productService.FilterAsync(filterDTO);
+
+            // Assert
+            Assert.All(result, p => Assert.True(Enum.Parse<DataEnums.Rating>(p.Rating) == agerRating));
+        }
+
+        [Theory]
+        [InlineData("Price")]
+        [InlineData("TotalRating")]
+        public async Task FilterAsync_Sort_ReturnsSortedProducts(string sortProperty)
+        {
+            // Arrange
+            var filterDTO = new ProductFilterDTO
+            {
+                OrderPropertyName = sortProperty
+            };
+
+            // Act
+            var result = await _productService.FilterAsync(filterDTO);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(result.AsQueryable().OrderBy(x => x.GetType().GetProperty(sortProperty)), result);
+        }
+
     }
 }
+
+
+
 
