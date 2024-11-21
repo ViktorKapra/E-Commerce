@@ -18,5 +18,6 @@ namespace ECom.Data.Models
         public DataEnums.Rating Rating { get; set; }
         public bool IsDeleted { get; set; } = false;
         public ICollection<ProductRating> Ratings { get; set; }
+        public ICollection<Order> AssociatedOrders { get; set; }
     }
 }

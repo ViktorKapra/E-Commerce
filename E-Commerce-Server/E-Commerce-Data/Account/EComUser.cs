@@ -9,6 +9,7 @@ namespace ECom.Data.Account
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public ICollection<ProductRating> Ratings { get; set; }
+        public ICollection<OrderList> OrderLists { get; set; }
         public EComUser() : base() { }
 
     }

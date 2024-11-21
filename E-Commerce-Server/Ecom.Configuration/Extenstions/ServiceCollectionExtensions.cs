@@ -4,6 +4,7 @@ using ECom.BLogic.Services.EmailService.Settings;
 using ECom.BLogic.Services.Image;
 using ECom.BLogic.Services.Image.Settings;
 using ECom.BLogic.Services.Interfaces;
+using ECom.BLogic.Services.Order;
 using ECom.BLogic.Services.Product;
 using ECom.BLogic.Services.Profile;
 using ECom.Data;
@@ -50,6 +51,7 @@ namespace ECom.Configuration.Extenstions
             services.AddScoped<IProductService, ProductService>();
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<SmtpClient>();
+            services.AddScoped<IOrderService, OrderService>();
             return services;
         }
 
