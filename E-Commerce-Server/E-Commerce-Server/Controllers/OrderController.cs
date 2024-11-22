@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using ECom.API.Exchanges.Order;
+using ECom.API.Filters;
 using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace ECom.API.Controllers
 {
@@ -27,6 +30,7 @@ namespace ECom.API.Controllers
         /// <param name="orderListId"></param>
         /// <response code="200">Returns found order list</response>
         [HttpGet]
+        [ServiceFilter<ValidationNonNegativeInteger>()]
         public async Task<IActionResult> GetUserOrderList(int? orderListId)
         {
             OrderListDTO result;
@@ -36,11 +40,6 @@ namespace ECom.API.Controllers
             }
             else
             {
-                if (orderListId < 0)
-                {
-                    return BadRequest("Id must be non-negative");
-                }
-
                 OrderListDescriptionDTO descriptionDTO = new OrderListDescriptionDTO
                 {
                     OrderListId = (int)orderListId,
@@ -91,12 +90,10 @@ namespace ECom.API.Controllers
         /// <param name="orderListId"></param>
         /// <response code="204"></response>
         [HttpDelete]
-        public async Task<IActionResult> DeleteOrderList(int orderListId)
+        [ServiceFilter<ValidationNonNegativeInteger>()]
+        public async Task<IActionResult> DeleteOrderList([Required] int orderListId)
         {
-            if (orderListId < 0)
-            {
-                return BadRequest("Id must be non-negative");
-            }
+
             OrderListDescriptionDTO descriptionDTO = new OrderListDescriptionDTO
             {
                 OrderListId = orderListId,
