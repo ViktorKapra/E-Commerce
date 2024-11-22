@@ -111,5 +111,24 @@ namespace ECom.Test.BLogicTests
             Assert.Equal(orderListDTO.Orders.Count, result.Orders.Count);
             Assert.Equal(orderListDTO.Orders[0].ProductId, result.Orders[0].ProductId);
         }
+
+        [Fact]
+        public async Task UpdateOrderListAsync_ShouldReturnOrderList_True()
+        {
+            //Arrange
+            await EnsureTestOrderListExists();
+            var orderListDTO = _mapper.Map<OrderListDTO>(_context.OrderLists.FirstOrDefault(r => r.CustomerId == testUser.Id));
+            uint updatedQuintity = 2;
+            orderListDTO.Orders[0].Quantity = updatedQuintity;
+
+            //Act
+            var result = await _orderService.UpdateOrderListAsync(orderListDTO);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(orderListDTO.Orders.Count, result.Orders.Count);
+            Assert.Equal(orderListDTO.Orders[0].ProductId, result.Orders[0].ProductId);
+            Assert.Equal(updatedQuintity, result.Orders[0].Quantity);
+        }
     }
 }
