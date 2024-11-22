@@ -6,7 +6,7 @@ namespace ECom.BLogic.DTOs
     {
         public int Id { get; set; }
         public bool IsFinalized { get; set; }
-        public ClaimsPrincipal UserClaim { get; set; }
+        public ClaimsPrincipal? UserClaim { get; set; }
         public List<OrderDTO> Orders { get; set; }
     }
 }

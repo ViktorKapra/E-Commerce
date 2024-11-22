@@ -26,7 +26,6 @@ namespace ECom.API.Controllers
         /// <remarks>Default means unfinalized orderList or last modified orderList </remarks>
         /// <param name="orderListId"></param>
         /// <response code="200">Returns found order list</response>
-        /// <response code="400">If id is negative</response>
         [HttpGet]
         public async Task<IActionResult> GetUserOrderList(int? orderListId)
         {
@@ -71,7 +70,9 @@ namespace ECom.API.Controllers
         /// <summary>
         /// Updates order list
         /// </summary>
-        /// <remarks> Only unfinalized order lists can be updated</remarks>
+        /// <remarks> Only unfinalized order lists can be updated.
+        /// IsFinalized field cannot be changed.
+        /// </remarks>
         /// <param name="orderList"></param>
         /// <response code="200">Returns updated order list</response>
         [HttpPut]

@@ -68,7 +68,7 @@ namespace ECom.Test.BLogicTests
             var descriptionDTO = new OrderListDescriptionDTO
             {
                 OrderListId = orderListDTO.Id,
-                UserClaim = orderListDTO.UserClaim
+                UserClaim = orderListDTO.UserClaim!
             };
             await _orderService.DeleteOrderListAsync(descriptionDTO);
             //Assert
@@ -82,7 +82,7 @@ namespace ECom.Test.BLogicTests
             await EnsureTestOrderListExists();
             var orderListDTO = _mapper.Map<OrderListDTO>(_context.OrderLists.FirstOrDefault(r => r.CustomerId == testUser.Id));
             //Act
-            await _orderService.FinalizeUserOrderList(orderListDTO.UserClaim);
+            await _orderService.FinalizeUserOrderList(orderListDTO.UserClaim!);
             //Assert
             var result = _context.OrderLists.FirstOrDefault(r => r.Id == orderListDTO.Id);
             Assert.NotNull(result);
@@ -100,7 +100,7 @@ namespace ECom.Test.BLogicTests
             var descriptionDTO = new OrderListDescriptionDTO
             {
                 OrderListId = orderListDTO.Id,
-                UserClaim = orderListDTO.UserClaim
+                UserClaim = orderListDTO.UserClaim!
             };
 
             //Act

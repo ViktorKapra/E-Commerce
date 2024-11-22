@@ -104,7 +104,6 @@ namespace ECom.BLogic.Services.Order
         public async Task<OrderListDTO> GetUserDefaultOrderList(ClaimsPrincipal userClaim)
         {
             EComUser user = await _userService.GetUserAsync(userClaim);
-
             Data.Models.OrderList? orderList = await GetLastUnfinalizedOrderList(user);
             orderList = orderList is null
                       ? await GetLastModifiedOrderList(user)
@@ -116,9 +115,7 @@ namespace ECom.BLogic.Services.Order
                 Log.Error(message);
                 throw new ElementNotFoundException(message);
             }
-
             return _mapper.Map<OrderListDTO>(orderList);
-
         }
 
         public async Task<OrderListDTO> GetOrderList(OrderListDescriptionDTO descriptionDTO)
@@ -166,7 +163,7 @@ namespace ECom.BLogic.Services.Order
 
         public async Task<OrderListDTO> UpdateOrderListAsync(OrderListDTO orderListDTO)
         {
-            EComUser user = await _userService.GetUserAsync(orderListDTO.UserClaim);
+            EComUser user = await _userService.GetUserAsync(orderListDTO.UserClaim!);
             Data.Models.OrderList orderList;
 
             try
@@ -193,7 +190,7 @@ namespace ECom.BLogic.Services.Order
             orderList.Orders = await CreateOrdersForOrderList(orderList, orderListDTO.Orders);
             _context.OrderLists.Update(orderList);
             await _context.SaveChangesAsync();
-
+            Log.Information("Order updated.");
             return _mapper.Map<OrderListDTO>(orderList);
         }
     }
