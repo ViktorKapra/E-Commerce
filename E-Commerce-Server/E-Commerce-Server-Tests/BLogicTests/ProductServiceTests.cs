@@ -1,75 +1,32 @@
 ﻿using AutoFixture;
-using AutoMapper;
-using ECom.API.Mapper;
 using ECom.BLogic.DTOs;
 using ECom.BLogic.Services.DTOs;
 using ECom.BLogic.Services.Interfaces;
 using ECom.BLogic.Services.Product;
-using ECom.BLogic.Services.Profile;
 using ECom.Constants;
-using ECom.Data;
-using ECom.Data.Account;
 using ECom.Data.Models;
 using FakeItEasy;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using System.Linq.Expressions;
 
 namespace ECom.Test.BLogicTests
 {
-    public class ProductServiceTests
+    public class ProductServiceTests : ServiceWithContextTests
     {
-        private ApplicationDbContext _context;
         private IImageService _imageService = A.Fake<IImageService>();
-        private readonly IMapper _mapper = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()).CreateMapper();
         private IProductService _productService;
-        private IUserService _userService = new UserService(A.Fake<SignInManager<EComUser>>(),
-                                                            A.Fake<UserManager<EComUser>>(),
-                                                            A.Fake<IMapper>());
 
-        public ProductServiceTests()
+
+        public ProductServiceTests() : base("DataBase_Poducts")
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
-                .Options;
-            _context = new ApplicationDbContext(options);
-            if (_context.Products.Count() == 0)
-            { LoadTestData(); }
             _productService = new ProductService(_context, _mapper, _imageService, _userService);
         }
-
-        private void LoadTestData()
+        protected override void LoadTestData()
         {
-            var products = new List<Product>
-                {
-                    new Product { Id = 1, Name = "Product 1", Platform = DataEnums.Platform.PC,
-                        DateCreated = new DateOnly(2023, 1, 25), Price = 25.5m, TotalRating = 3.2m,
-                        Genre = "PRG"},
-
-                    new Product { Id = 2, Name = "Product 2", Platform = DataEnums.Platform.PC,
-                        DateCreated = new DateOnly(2023, 4, 26), Price = 30.0m, TotalRating = 4.5m,
-                        Genre = "Action"},
-
-                    new Product { Id = 3, Name = "Product 3", Platform = DataEnums.Platform.PC,
-                        DateCreated = new DateOnly(2023, 1, 27), Price = 50.0m, TotalRating = 4.0m,
-                        Genre = "Racing"},
-
-                    new Product { Id = 4, Name = "Product 4", Platform = DataEnums.Platform.Console,
-                        DateCreated = new DateOnly(2023, 1, 28), Price = 20.0m, TotalRating = 3.8m,
-                        Genre = "Logic"},
-
-                    new Product { Id = 5, Name = "Product 5", Platform = DataEnums.Platform.Console,
-                        DateCreated = new DateOnly(2023, 1, 29), Price = 35.0m, TotalRating = 4.2m,
-                        Genre = "Puzzle"},
-
-                    new Product { Id = 6, Name = "Product 6", Platform = DataEnums.Platform.Mobile,
-                        DateCreated = new DateOnly(2020, 1, 27), Price = 10.0m, TotalRating = 1.0m,
-                        Genre = "Logic"},
-                };
-            _context.Products.AddRange(products);
-            _context.SaveChanges();
+            base.LoadTestData();
+            _context.Users.Add(testUser);
         }
 
         [Fact]
@@ -295,6 +252,49 @@ namespace ECom.Test.BLogicTests
             Assert.Equal(result.AsQueryable().OrderBy(x => x.GetType().GetProperty(sortProperty)), result);
         }
 
+        [Fact]
+        public async Task RateProduct_CreatesNewProductRating_True()
+        {
+            // Arrange
+            int CountBefore = _context.ProductRatings.Count();
+            var fixture = new Fixture();
+            var rating = fixture.Create<ProductRatingDTO>();
+            rating.ProductId = _context.Products.First().Id;
+
+            // Act
+
+            await _productService.RateProductAsync(rating);
+            // Assert
+            Assert.Equal(CountBefore + 1, _context.ProductRatings.Count());
+
+        }
+
+        [Fact]
+        public async Task DeleteRatingAsync_DeletesUserRating_True()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            ProductRatingDTO ratingDTO = fixture.Create<ProductRatingDTO>();
+            if (_context.ProductRatings.Count() == 0)
+            {
+                ProductRating rating = new ProductRating();
+                rating.ProductId = _context.Products.First().Id;
+                rating.UserId = testUser.Id;
+                _context.ProductRatings.Add(rating);
+                await _context.SaveChangesAsync();
+                ratingDTO = _mapper.Map<ProductRatingDTO>(rating);
+            }
+            else
+            {
+                ratingDTO = _mapper.Map<ProductRatingDTO>(_context.ProductRatings.First());
+            }
+            // Act
+
+            await _productService.DeleteRatingAsync(ratingDTO);
+            // Assert
+            Assert.Null(_context.ProductRatings.FirstOrDefault(r => r.UserId == testUser.Id));
+
+        }
     }
 }
 

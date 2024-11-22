@@ -60,7 +60,7 @@ namespace ECom.BLogic.Services.Product
             {
                 var message = $"Product with id {id} is not found";
                 Log.Error(message);
-                throw new NonExistnantException(message);
+                throw new ElementNotFoundException(message);
             }
             return result;
         }
@@ -185,7 +185,7 @@ namespace ECom.BLogic.Services.Product
                                                                       && x.ProductId == product.Id);
             if (rating is null)
             {
-                throw new NonExistnantException($"There aren't any rating records for the game '{product.Name}' ");
+                throw new ElementNotFoundException($"There aren't any rating records for the game '{product.Name}' ");
             }
             _context.ProductRatings.Remove(rating);
             await _context.SaveChangesAsync();

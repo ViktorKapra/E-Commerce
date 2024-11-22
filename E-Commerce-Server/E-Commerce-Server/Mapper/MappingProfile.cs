@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECom.API.Exchanges.Authentication;
+using ECom.API.Exchanges.Order;
 using ECom.API.Exchanges.Product;
 using ECom.API.Exchanges.Profile;
 using ECom.BLogic.DTOs;
@@ -84,6 +85,23 @@ namespace ECom.API.Mapper
                    Limit = src.Limit,
                    Offset = src.Offset
                });
+
+            CreateMap<OrderDTO, Order>().ReverseMap();
+
+            CreateMap<OrderExchange, OrderDTO>().ReverseMap();
+
+            CreateMap<OrderListExchange, OrderListDTO>().ReverseMap();
+
+            CreateMap<CreateOrderListRequest, OrderListDTO>()
+                .ForMember(dest => dest.UserClaim, opt => opt.UseDestinationValue())
+                .ForMember(dest => dest.Orders, opt => opt.MapFrom(src => src.Orders));
+
+            CreateMap<OrderListDTO, OrderList>()
+                .ForMember(dest => dest.Id, opt => opt.UseDestinationValue())
+                .ForMember(dest => dest.IsFinalized, opt => opt.UseDestinationValue())
+                .ForMember(dest => dest.Orders, opt => opt.MapFrom(src => src.Orders));
+
+            CreateMap<OrderList, OrderListDTO>();
 
         }
     }

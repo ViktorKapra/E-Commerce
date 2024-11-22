@@ -51,6 +51,8 @@ namespace ECom.API
 
             services.AddScoped<ValidationProductFilterAttribute>();
 
+            services.AddScoped<ValidationNonNegativeInteger>();
+
             services.AddSwaggerGen(c =>
             {
                 {

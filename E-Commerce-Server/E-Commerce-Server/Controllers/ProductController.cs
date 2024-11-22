@@ -15,14 +15,12 @@ namespace ECom.API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductService productService, IMapper mapper, IUserService userService)
+        public ProductController(IProductService productService, IMapper mapper)
         {
             _productService = productService;
             _mapper = mapper;
-            _userService = userService;
         }
 
         /// <summary>

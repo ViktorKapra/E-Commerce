@@ -4,6 +4,7 @@ using ECom.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECom.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120183326_Order_OrderList_Tables")]
+    partial class Order_OrderList_Tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,16 +130,21 @@ namespace ECom.Data.Migrations
 
             modelBuilder.Entity("ECom.Data.Models.Order", b =>
                 {
-                    b.Property<int>("OrderListId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("OrderListId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderListId", "ProductId");
+                    b.HasKey("Id", "ProductId");
+
+                    b.HasIndex("OrderListId");
 
                     b.HasIndex("ProductId");
 
